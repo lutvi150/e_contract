@@ -16,12 +16,15 @@
     <div class="container">
 
     <style>
-        #mapid {
-            height: 500px;
+        .mapid {
+            height: 5000px;
+            width: 5000px;
         }
 
     </style>
-    <div id="mapid"></div>
+    <br>
+    <br><br>
+    <div class="mapid" id="mapid"></div>
     </div>
 </body>
 <script src="{{asset('assets/jquery/dist/jquery.js')}}"></script>
@@ -33,7 +36,7 @@
     var mymap = L.map('mapid').setView([-0.45812,100.59402], 17);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
+        maxZoom: 30,
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,

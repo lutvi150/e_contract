@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Chart;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\PrintContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +38,7 @@ Route::get('login',['as'=>'login', function () {
     return view('auth.login');
     }
 }]);
+
 Route::post('login/verification', [AuthController::class,'formLogin']);
 // use for new logout
 Route::get('session/logout', function () {
@@ -44,13 +46,21 @@ Route::get('session/logout', function () {
     session()->flush();
     return redirect("/");
 });
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
-Route::view('user/dashboard', 'user.dashboard');
-Route::view('user/contract', 'user.contract');
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->name('dashboard');
+Route::view('user/dashboard', 'user.dashboard')->middleware('userCheck');
+Route::get('user/contract', [ContractController::class,'getContract']);
 Route::view('user/contract/create', 'user.createContract');
-Route::get('user/contract/store', [ContractController::class,'contractCheck']);
+Route::post('user/contract/store', [ContractController::class,'contractCheck']);
+Route::get('user/contract/get',[ContractController::class,'getContract']);
+// Route::get('user/contract/edit/{id}',[ContractController::class,'editContract']);
+Route::post('user/contract/find',[ContractController::class,'findContract']);
+Route::post('user/contract/update',[ContractController::class,'updateContract']);
+Route::post('user/contract/sendContract',[ContractController::class,'sendContract']);
+Route::post('user/contract/count', [ContractController::class,'countContractUser']);
+// print
+Route::get('contract/{id}',[PrintContract::class,'PrintContract']);
 // development
 Route::view('dev/map', 'dev.map');
 // use for tes
@@ -58,3 +68,7 @@ Route::get('session/make', [AuthController::class,'saveSession']);
 Route::get('session/show', [AuthController::class,'callSession']);
 Route::get('session/clear', [AuthController::class,'clearSession']);
 Route::post('login/verification',[AuthController::class,'formLogin']);
+
+// make table
+Route::view('chart', 'chart');
+Route::get('barcode',[PrintContract::class,'barcodeTes']);

@@ -17,6 +17,7 @@
         "laravel/jetstream": "^2.2",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
+        "milon/barcode": "^8.0",
         "mpdf/mpdf": "^8.0",
         "tightenco/ziggy": "^1.0",
         "yajra/laravel-datatables-oracle": "~9.0"

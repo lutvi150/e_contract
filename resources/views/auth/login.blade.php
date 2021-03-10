@@ -38,7 +38,12 @@
                             <p>Username atau password yang anda gunakan salah !</p>
                         </div>
                        </div>
-
+                       @if ($message=Session::get('error'))
+                       <div class="alert alert-danger"  role="alert">
+                        <strong>Error</strong>
+                        <p>{{ $message }}</p>
+                    </div>
+                       @endif
                         <form class="mt-4" method="POST" action="{{ url('login/verification') }}">
                             @csrf
                             <div class="row">
@@ -117,8 +122,8 @@
                 dataType: "JSON",
                 success: function (response) {
                     if (response.status=='validationerror') {
-                        $(".email").text(response.erors.email[0]);
-                        $(".password").text(response.erors.password[0]);
+                        $(".email").text(response.erors.email);
+                        $(".password").text(response.erors.password);
                     } else if (response.status=='failed') {
                         $(".msg-alert").removeAttr("hidden");
 
