@@ -58,7 +58,7 @@
                             cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th style="width: 10px">No</th>
                                     <th>Nomor Kontrak</th>
                                     <th>Nama Pekerjaan</th>
                                     <th style="width: 10px">Status</th>
@@ -174,8 +174,9 @@
 
 <!-- /page content -->
 <script>
+    $("#data-contract").DataTable();
     $(document).ready(function () {
-
+        // showDataContract();
     });
     function redirect() {
          window.location.href="{{ url('user/contract') }}";

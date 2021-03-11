@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Contract;
 use App\Models\skpd;
 use Illuminate\Http\Request;
@@ -41,8 +42,9 @@ class ContractController extends Controller
     public function getContract(Request $request)
     {
 
-        $contract = Contract::where('id_field', session()->get('id_filed'))->select('contract_number', 'job_name', 'status', 'id')->orderBy('id','desc')->get();
+        $contract = Contract::where('id_field', session()->get('id_field'))->select('contract_number', 'job_name', 'status', 'id')->orderBy('id','desc')->get();
         return view('user.contract', ['contract' => $contract]);
+        // dd($contract);
     }
     public function editContract(Request $request)
     {
@@ -55,12 +57,14 @@ class ContractController extends Controller
     {
         $contract=Contract::find(decrypt($request->id));
         $skpd=skpd::select('id_skpd','skpd_name')->where('id_skpd',$contract->id_skpd)->first();
+        $attachment=$this->getAttachment();
         $respon = [
             'status' => 'success',
             'msg' => 'Contract found',
             'data' => [
                 'contract' =>$contract,
                 'skpd'=>$skpd,
+                'attachment'=>$attachment
             ],
         ];
         return response()->json($respon,200);
@@ -142,5 +146,10 @@ class ContractController extends Controller
             ],
         ];
         return response()->json($respon,200);
+    }
+    public function getAttachment(Type $var = null)
+    {
+        $attachment=Attachment::select('id_attachment','attachment')->get();
+        return $attachment;
     }
 }

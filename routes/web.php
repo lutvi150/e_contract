@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Chart;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\FileAttachmentController;
 use App\Http\Controllers\PrintContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,7 @@ Route::post('user/contract/find',[ContractController::class,'findContract']);
 Route::post('user/contract/update',[ContractController::class,'updateContract']);
 Route::post('user/contract/sendContract',[ContractController::class,'sendContract']);
 Route::post('user/contract/count', [ContractController::class,'countContractUser']);
+Route::post('user/contract/upload/attachment', [FileAttachmentController::class,'store']);
 // print
 Route::get('contract/{id}',[PrintContract::class,'PrintContract']);
 // development

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\FileAttachmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,4 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('login/verification',[AuthController::class,'formLogin']);
 Route::get('user/contract/get',[ContractController::class,'getContract']);
+Route::post('user/contract/upload/attachment', [FileAttachmentController::class,'store']);

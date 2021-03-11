@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Contract;
 use Illuminate\Database\Seeder;
 
 class ContractSeeder extends Seeder
@@ -13,6 +14,20 @@ class ContractSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $insert=[
+            'job_name'=>'DAK Jalan Paket 1',
+            'ppk_name'=>'Refdizalis',
+            'ceiling'=>2000000000,
+            'contract_value'=>18000000,
+            'source_founds'=>"DAK",
+            'procuretment_type'=>1,
+            'method_selection'=>1,
+            'id_field'=>1,
+            'id_skpd'=>1,
+            'contract_number'=>'360/1522/SPK/PPK/BPBD-Pdg/XII/2020',
+            'status'=>'draf',
+            'id_user'=>1,
+        ];
+        Contract::insert($insert);
     }
 }
