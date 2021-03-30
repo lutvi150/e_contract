@@ -88,7 +88,7 @@
                                     @if ($item->status=='draf')
                                     <a href="#" class="btn btn-success btn-sm" onclick="sendContract({{ $item->id}});"><i class="fa fa-send"></i> Kirim</a>
                                     <a href="#" data-id="" onclick="edit('{{ encrypt($item->id) }}')" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
-
+                                    <a href="#" class="btn btn-danger btn-sm" onclick="deleteData('{{ encrypt($item->id) }}')"><i class="fa fa-trash"></i> Hapus</a>
                                     @endif
                                     @if ($item->status=='success')
                                     <a href="{{ url('contract/'.encrypt($item->id)) }}" target="_blank" class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Cetak</a>
@@ -155,7 +155,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal success -->
 <div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -167,6 +167,26 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="redirect()" >tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal delete data -->
+<div class="modal fade" id="deleteData" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hapus Data</h5>
+
+            </div>
+            <div class="modal-body">
+                Yakin akan hapus data ?
+                <input type="text">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -262,7 +282,9 @@
             });
         }
     }
+    function deleteData(id) {
 
+     }
     function hideText() {
         setTimeout(function () {
             $(".text-muted").text("");

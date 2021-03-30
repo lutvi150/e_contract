@@ -28,6 +28,8 @@ class CreateContractsTable extends Migration
             $table->string("status",20)->nullable();//draf,process,refuse, success
             $table->string("method_selection",3)->nullable();
             $table->string("addendum",3)->nullable();
+            $table->text("provider")->nullable();
+            $table->softDeletes('deleted_at');
             $table->timestamps();
         });
     }

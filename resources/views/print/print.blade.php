@@ -125,9 +125,9 @@
                 </td>
                 <td class="noline" style="text-align: center;">
                     Batusangkar, 11 Februari 2021 <br>
-                    Kepala Bagian Administrasi <br>
-                    Pembangunan Dan Perencanaan <br><br><br><br><br>
-                    <u style="font-weight: bold;">NOVALINO,SE.MM</u><br>NIP. 19710104 200112 1 007
+                    Kepala Bagian Administrasi Pembangunan<br>
+                    Sekretariat Daerah Kabupaten Tanah Datar <br><br><br><br><br>
+                    <u style="font-weight: bold;">ANDI MQLBUL CHAIRAHMAN, SH.MH</u><br>NIP. 19670806 199303 1 004
                 </td>
             </tr>
         </table></td>

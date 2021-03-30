@@ -42,7 +42,7 @@ class ContractController extends Controller
     public function getContract(Request $request)
     {
 
-        $contract = Contract::where('id_field', session()->get('id_field'))->select('contract_number', 'job_name', 'status', 'id')->orderBy('id','desc')->get();
+        $contract = Contract::where('id_user', session()->get('data.id'))->select('contract_number', 'job_name', 'status', 'id')->orderBy('id','desc')->get();
         return view('user.contract', ['contract' => $contract]);
         // dd($contract);
     }
@@ -151,5 +151,9 @@ class ContractController extends Controller
     {
         $attachment=Attachment::select('id_attachment','attachment')->get();
         return $attachment;
+    }
+    public function shoftDelete(Request $request)
+    {
+        // Contract::
     }
 }

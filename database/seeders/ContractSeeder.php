@@ -26,7 +26,8 @@ class ContractSeeder extends Seeder
             'id_skpd'=>1,
             'contract_number'=>'360/1522/SPK/PPK/BPBD-Pdg/XII/2020',
             'status'=>'draf',
-            'id_user'=>1,
+            'id_user'=>3,
+            'provider'=>'CV Ani',
         ];
         Contract::insert($insert);
     }

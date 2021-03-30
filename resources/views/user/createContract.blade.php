@@ -83,6 +83,11 @@
                                                         <small id="helpId"
                                                             class="text-muted red contract_value"></small>
                                                     </div>
+                                                    <div class="form-group">
+                                                      <label for="">Penyedia</label>
+                                                      <input type="text" name="provider" id="proviver" class="form-control" placeholder="" aria-describedby="helpId">
+                                                      <small id="helpId" class="text-muted red provider"></small>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -110,15 +115,18 @@
                                                         <small id="helpId"
                                                             class="text-muted red method_selection"></small>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label for="">Sumber Dana</label>
+                                                        <select name="source_founds" id="source_founds" class="form-control">
+                                                            <option value="DAK">DAK</option>
+                                                            <option value="APBD">APBD</option>
+                                                            <option value="HIBAH">HIBAH</option>
+                                                        </select>
+                                                        <small id="helpId" class="text-muted red source_founds"></small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="">Sumber Dana</label>
-                                                <input type="text" name="source_founds" value="" id="source_founds"
-                                                    class="form-control" placeholder="" aria-describedby="helpId">
-                                                <small id="helpId" class="text-muted red source_founds"></small>
-                                            </div>
 
+                                            </div>
                                         </div>
 
                                     </div>
@@ -226,7 +234,7 @@
 
             </div>
             <div class="modal-body">
-                <form action="" enctype="multipart/form-data" method="post" id="formUpload">
+                <form action="{{ url('upload/store') }}" enctype="multipart/form-data" method="post" id="formUpload">
                     <input type="text" hidden name="id_attachment" class="id_attachment">
                     <input type="file" name="attachtment" id="file-attachment">
                     <span class="text-muted red error-attachment"></span>
@@ -234,7 +242,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" onclick="sendAttachment()"><i class="fa fa-upload"></i>
+                <button type="submit" class="btn btn-primary" onclick="sendAttachment()"><i class="fa fa-upload"></i>
                     Upload</button>
             </div>
         </div>
@@ -386,26 +394,24 @@
 
     function sendAttachment() {
         $(".text-muted").text("");
-        let els = {
-            attachment: $("#file-attachment")[0].files[0],
-            id_attachment: $(".id_attachment").val(),
-            id: $("#id").val(),
-        }
-        let data=new FormData();
-        data.append("attachment",$("#file-attachment")[0].files[0]);
-        data.append("id_attachment", $(".id_attachment").val());
-        data.append("id", $("#id").val());
-        console.log(els);
+
+        let data = new FormData();
+        data.append("attachment", $("#file-attachment")[0].files[0]);
+        // data.append("id_attachment", $(".id_attachment").val());
+        // data.append("id", $("#id").val());
+        // console.log(els);
         $.ajax({
             type: "POST",
-            url: "{{ url('user/contract/upload/attachment') }}",
+            url: $("#formUpload").attr("action"),
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            data:data,
+            mimeType: 'multipart/form-data',
+            data: data,
             processData: false,
+            cache: false,
             contentType: false,
-            dataType: "JSON",
+            dataType: "text",
             success: function (response) {
                 if (response.status == 'error') {
                     $(".error-attachment").text(response.erors.attachment);

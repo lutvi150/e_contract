@@ -69,7 +69,7 @@ class FileAttachmentController extends Controller
         //     ];
         //     return response()->json($respon,200);
         // }
-        return response()->json($request);
+        return response()->json($request->allFiles()    );
     }
 
     /**
