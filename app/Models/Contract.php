@@ -11,6 +11,6 @@ class Contract extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable=[
-        'contract_number','job_name','id_skpd','ppk_name','ceiling','contract_value','procuretment_type','source_founds','status','method_selecttion','addenum'
+        'contract_number','job_name','id_skpd','id_user','id_field','ppk_name','ceiling','contract_value','procuretment_type','source_founds','status','method_selecttion','addenum'
     ];
 }

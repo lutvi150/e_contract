@@ -182,16 +182,34 @@
             </div>
             <div class="modal-body">
                 Yakin akan hapus data ?
-                <input type="text">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-primary" onclick="sendDeleteData()">Save</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal eror -->
+<div class="modal fade" id="errorMessage" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title error-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="error-msg"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /page content -->
 <script>
     $("#data-contract").DataTable();
@@ -260,8 +278,8 @@
         } else {
             let data = {
                 contract_number: numberContract,
-                id_user: "{{ session()->get('data.id_user') }}",
-                id_field: "{{ session()->get('data.id_field') }}",
+                id_user: "{{ session()->get('data.id') }}",
+                id_field: "{{ session()->get('id_field') }}",
                 id_skpd: "{{ session()->get('data.id_skpd') }}",
                 _token: "{{ csrf_token() }}"
             }
@@ -283,8 +301,30 @@
         }
     }
     function deleteData(id) {
-
+        $("#id").val(id);
+        $("#deleteData").modal("show");
      }
+     function sendDeleteData() {
+         let id=$("#id").val();
+         $.ajax({
+             type: "POSt",
+             url: "{{url('user/contract/delete')}}",
+             data: {id:id,_token:'{{ csrf_token() }}'},
+             dataType: "JSON",
+             success: function (response) {
+                 $('#deleteData').modal("hide");
+                 $(".error-title").text("Success");
+                 $('.error-msg').text('Data berhasil di hapus');
+                 $('#errorMessage').modal("show");
+
+             },error:function(){
+                 $('#deleteData').modal("hide");
+                 $(".error-title").text("Eror Webservice");
+                 $('.error-msg').text('Eror Webservice');
+                 $('#errorMessage').modal("show");
+             }
+         });
+      }
     function hideText() {
         setTimeout(function () {
             $(".text-muted").text("");

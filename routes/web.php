@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\FileAttachmentController;
 use App\Http\Controllers\PrintContract;
 use App\Http\Controllers\UploadController;
@@ -76,3 +77,7 @@ Route::post('login/verification', [AuthController::class, 'formLogin']);
 // make table
 Route::view('chart', 'chart');
 Route::get('barcode', [PrintContract::class, 'barcodeTes']);
+// tes function
+Route::get('tes', function () {
+    return response()->json(session()->all());
+});

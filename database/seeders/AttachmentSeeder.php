@@ -17,20 +17,24 @@ class AttachmentSeeder extends Seeder
         $insert = [
             [
                 'id_attachment' => 1,
-                'attachment' => 'Surat Perintah Kerja/ Surat Perjanjian/ Surat Pesanan'
+                'attachment' => 'RAB (Rencana Anggaran Biaya)'
             ],
             [
                 'id_attachment' => 2,
-                'attachment' => 'Surat Perintah Mulai Kerja (SPMK)'
+                'attachment' => 'SPM'
             ],
             [
                 'id_attachment' => 3,
-                'attachment' => 'Daftar Kuantitas dan Harga/RAB'
+                'attachment' => 'Time Schedule'
             ],
 
             [
                 'id_attachment' => 4,
-                'attachment' => 'Time Schedule'
+                'attachment' => 'PHO'
+            ],
+            [
+                'id_attachment'=>5,
+                'attachment'=>'SPK (Surat Perintah Kerja)'
             ]
         ];
         Attachment::insert($insert);

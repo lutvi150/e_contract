@@ -15,13 +15,14 @@ class ContractController extends Controller
     {
         $contract = Contract::where("contract_number", $request->contract_number);
         if ($contract->count() == 0) {
-            $id=Contract::create([
+            $store=[
                 'contract_number' => $request->contract_number,
                 'id_user' => $request->id_user,
                 'id_field' => $request->id_field,
                 'id_skpd' => $request->id_skpd,
                 'status' => 'draf',
-            ])->id;
+            ];
+            $id=Contract::create($store)->id;
             $respon = [
                 'status' => 'success',
                 'msg' => 'Contract Make it',
@@ -154,6 +155,12 @@ class ContractController extends Controller
     }
     public function shoftDelete(Request $request)
     {
-        // Contract::
+        $data=Contract::find(decrypt($request->id))->delete();
+        $respon=[
+            'status'=>'success',
+            'msg'=>'data success deleted',
+            'data'=>$data,
+        ];
+        return response()->json($respon,200);
     }
 }

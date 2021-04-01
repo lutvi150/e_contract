@@ -25,10 +25,10 @@
 
                         <div class="" role="tabpanel" data-example-id="togglable-tabs">
                             <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                <li role="presentation" class=""><a href="#data_contract" id="home-tab" role="tab"
+                                <li role="presentation" class="active"><a href="#data_contract" id="home-tab" role="tab"
                                         data-toggle="tab" aria-expanded="true">Data Kontrak</a>
                                 </li>
-                                <li role="presentation" class="active"><a href="#attachment" role="tab" id="profile-tab"
+                                <li role="presentation" class=""><a href="#attachment" role="tab" id="profile-tab"
                                         data-toggle="tab" aria-expanded="false">Lampiran</a>
                                 </li>
                                 {{-- <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2"
@@ -36,7 +36,7 @@
                                 </li> --}}
                             </ul>
                             <div id="myTabContent" class="tab-content">
-                                <div role="tabpanel" class="tab-pane fade " id="data_contract"
+                                <div role="tabpanel" class="tab-pane fade active in" id="data_contract"
                                     aria-labelledby="home-tab">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -131,7 +131,7 @@
 
                                     </div>
                                 </div>
-                                <div role="tabpanel" class="tab-pane fade active in" id="attachment"
+                                <div role="tabpanel" class="tab-pane fade " id="attachment"
                                     aria-labelledby="profile-tab">
                                     <div class="row">
                                         <div class="col-md-12">

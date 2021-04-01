@@ -29,7 +29,7 @@ class CreateContractsTable extends Migration
             $table->string("method_selection",3)->nullable();
             $table->string("addendum",3)->nullable();
             $table->text("provider")->nullable();
-            $table->softDeletes('deleted_at');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
