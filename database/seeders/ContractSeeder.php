@@ -19,7 +19,7 @@ class ContractSeeder extends Seeder
             'ppk_name'=>'Refdizalis',
             'ceiling'=>2000000000,
             'contract_value'=>18000000,
-            'source_founds'=>"DAK",
+            'source_founds'=>1,
             'procuretment_type'=>1,
             'method_selection'=>1,
             'id_field'=>1,

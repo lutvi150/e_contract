@@ -35,6 +35,17 @@ class AttachmentSeeder extends Seeder
             [
                 'id_attachment'=>5,
                 'attachment'=>'SPK (Surat Perintah Kerja)'
+            ],
+            [
+                'id_attachment'=>6,
+                'attachment'=>'Surat Pesanan',
+            ],
+            [
+                'id_attachment'=>7,
+                'attachment'=>'Surat Perjanjian'
+            ],[
+                'id_attachment'=>8,
+                'attachment'=>'Kontrak'
             ]
         ];
         Attachment::insert($insert);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attachment;
+use App\Models\Contract;
+use App\Models\FileAttachment;
 use Illuminate\Http\Request;
 
 class AttachmentController extends Controller
@@ -82,4 +84,41 @@ class AttachmentController extends Controller
     {
         //
     }
+    public function attachmentPriview(Request $request)
+    {
+        $start=microtime(true);
+        $id = $request->id;
+        $id_contract=decrypt($request->id_contract);
+        Contract::where('id',$id_contract)->update(['procuretment_type'=>$id]);
+        switch ($id) {
+            case 4:
+                $filter = [1, 2, 3, 4];
+                break;
+            case 1:
+                $filter = [5, 6];
+                break;
+            case 2:
+                $filter = [1, 7, 3];
+                break;
+            case 3:
+                $filter = [8];
+                break;
+        }
+        foreach ($filter as $key => $value) {
+            $checkAttachment=Attachment::select('attachment','id_attachment')->where('id_attachment',$value)->first();
+            $attachment[]=[
+                'attachment'=>$checkAttachment['attachment'],
+                'id_attachment'=>$checkAttachment['id_attachment'],
+                'file_attachment'=>$id_contract."/".FileAttachment::where('id_contract',$id_contract)->where('id_attachment',$value)->pluck('file_attachment')->first(),
+            ];
+        }
+        $end=microtime(true)-$start;
+        $response = [
+            'status' => 'succes',
+            'data' =>$attachment,
+            'executed_time'=>$end,
+        ];
+        return response()->json($response, 200);
+    }
+
 }

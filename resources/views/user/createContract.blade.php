@@ -1,4 +1,5 @@
 @include('layouts.header')
+<script src="{{ asset('assets/jqform/form/dist/jquery.form.min.js') }}"></script>
 <!-- page content -->
 <div class="right_col" role="main">
     <div class="">
@@ -84,9 +85,11 @@
                                                             class="text-muted red contract_value"></small>
                                                     </div>
                                                     <div class="form-group">
-                                                      <label for="">Penyedia</label>
-                                                      <input type="text" name="provider" id="proviver" class="form-control" placeholder="" aria-describedby="helpId">
-                                                      <small id="helpId" class="text-muted red provider"></small>
+                                                        <label for="">Penyedia</label>
+                                                        <input type="text" name="provider" id="provider"
+                                                            class="form-control" placeholder=""
+                                                            aria-describedby="helpId">
+                                                        <small id="helpId" class="text-muted red provider"></small>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -94,10 +97,7 @@
                                                         <label for="">Jenis Pengadaan </label>
                                                         <select name="procuretment" class="form-control"
                                                             onchange="showMap()" id="procuretment">
-                                                            <option value="1">Barang</option>
-                                                            <option value="2">Jasa Konsultansi</option>
-                                                            <option value="3">Jasa Lainnya</option>
-                                                            <option value="4">Konstruksi</option>
+
                                                         </select>
                                                         <small id="helpId" class="text-muted red procuretment"></small>
                                                     </div>
@@ -105,22 +105,15 @@
                                                         <label for="">Metode Pemilihan</label>
                                                         <select name="method_selection" class="form-control"
                                                             id="method_selection">
-                                                            <option value="1">E-Purchasing</option>
-                                                            <option value="2">Pengadaan Langsung</option>
-                                                            <option value="3">Penunjukan Langsung</option>
-                                                            <option value="4">Seleksi</option>
-                                                            <option value="5">Tender</option>
-                                                            <option value="6">Tender Cepat</option>
+
                                                         </select>
                                                         <small id="helpId"
                                                             class="text-muted red method_selection"></small>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Sumber Dana</label>
-                                                        <select name="source_founds" id="source_founds" class="form-control">
-                                                            <option value="DAK">DAK</option>
-                                                            <option value="APBD">APBD</option>
-                                                            <option value="HIBAH">HIBAH</option>
+                                                        <select name="source_founds" id="source_fund"
+                                                            class="form-control">
                                                         </select>
                                                         <small id="helpId" class="text-muted red source_founds"></small>
                                                     </div>
@@ -215,10 +208,11 @@
                 <h5 class="modal-title">Success</h5>
             </div>
             <div class="modal-body">
-                Data Kontrak Berhasil di simpan !!
+                <p class="text-success">
+                    Data Kontrak Berhasil di simpan !!</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="redirect()">tutup</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" >tutup</button>
             </div>
         </div>
     </div>
@@ -234,9 +228,10 @@
 
             </div>
             <div class="modal-body">
-                <form action="{{ url('upload/store') }}" enctype="multipart/form-data" method="post" id="formUpload">
+                <form action="{{ url('upload/storae') }}" enctype="multipart/form-data" method="post" id="formUpload">
+                    @csrf
                     <input type="text" hidden name="id_attachment" class="id_attachment">
-                    <input type="file" name="attachtment" id="file-attachment">
+                    <input type="file" name="attachment" id="file-attachment">
                     <span class="text-muted red error-attachment"></span>
                 </form>
             </div>
@@ -244,6 +239,46 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary" onclick="sendAttachment()"><i class="fa fa-upload"></i>
                     Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Loading</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+
+                    <p class="text-loading">Loading File Mohon Tunggu !!!!</p>
+                    <div class="x_content">
+                        <div class="loader">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal show attachment -->
+<div class="modal fade" id="modelShowAttachment" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title title-show-attachment">Modal title</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="show-file-attachment"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -271,7 +306,10 @@
             dataType: "JSON",
             success: function (response) {
                 showFormContract(response.data, id)
-                showFormAttachement(response.data, id)
+                methodSelection(response);
+                categoryProcurement(response);
+                sourceFund(response);
+                showFormAttachement()
                 $(".loading").hide();
                 $(".formCreate").show();
             },
@@ -282,24 +320,98 @@
         });
     }
 
-    function showFormAttachement(response, id) {
-        let html = '';
-        response.attachment.forEach(element => {
-            html += ` <tr>
+    function showFormAttachement() {
+        $('.text-loading').text('Loading File Mohon Tunggu !!!!');
+        $('#modalLoading').modal('show');
+        $.ajax({
+            type: "POST",
+            url: "{{ url('user/attachment/priview') }}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                id: $('#procuretment').children('option:selected').val(),
+                id_contract: localStorage.getItem('id')
+            },
+            dataType: "JSON",
+            success: function (response) {
+                let html = '';
+                let status='';
+                response.data.forEach(element => {
+                    if (element.file_attachment!==null) {
+                        status=`<a href="#" onclick="priviewAttachment('`+element.file_attachment+`','`+element.attachment+`')" class="label label-success"><i class="fa fa-check" ></i> Sudah di Upload (Klik Untuk Priview)</a>`;
+                    } else{
+                        status=` <label for="" class="label label-danger">Belum di Upload</label>`
+                    }
+                    html += ` <tr>
                                                         <td>` + element.attachment + `</td>
                                                         <td>
-                                                            <label for="" class="label label-danger">Belum di
-                                                                Upload</label>
+                                                           `+status+`
                                                         </td>
                                                         <td>
                                                             <a href="#" onclick="uploadAttachment(` + element
-                .id_attachment + `)"
+                        .id_attachment + `)"
                                                                 class="btn btn-success btn-sm"><i
                                                                     class="fa fa-upload"></i> Upload Lampiran</a>
                                                         </td>
                                                     </tr>`;
+                });
+                $(".attachment").html(html);
+                $('#modalLoading').modal('hide');
+
+            },error:function(){
+                $(".error-msg").text('Error Server Access !!');
+                $("#modal-alert").modal("show");
+            }
         });
-        $(".attachment").html(html)
+    }
+    // prview attachment
+    function priviewAttachment (param,title) {
+        $('.show-file-attachment').html(`<embed src="{{ asset('attachment/`+param+`') }}" style="width: 100%;height:700px" type="">`)
+        $('.title-show-attachment').text(title);
+        $('#modelShowAttachment').modal('show');
+     }
+    // function for show method selection
+    function methodSelection(response) {
+        let html = '';
+        let selected = '';
+        response.data.support_view.method_selection.forEach(element => {
+            if (element.id == response.data.contract.method_selection) {
+                selected = 'selected'
+            } else {
+                selected = '';
+            }
+            html += ` <option ` + selected + ` value="` + element.id + `">` + element.method + `</option>`;
+        });
+        $('#method_selection').html(html);
+    }
+
+    function categoryProcurement(response) {
+        let html = '';
+        let selected = '';
+        response.data.support_view.category_procurement.forEach(element => {
+            if (element.id == response.data.contract.procuretment_type) {
+                selected = 'selected'
+            } else {
+                selected = '';
+            }
+            html += `<option ` + selected + ` value="` + element.id + `">` + element.category + `</option>`;
+        });
+        $('#procuretment').html(html)
+    }
+
+    function sourceFund(response) {
+        let html = '';
+        let selected = '';
+        response.data.support_view.source_fund.forEach(element => {
+            if (element.id == response.data.contract.source_founds) {
+                selected = 'selected'
+            } else {
+                selected = '';
+            }
+            html += `<option ` + selected + ` value="` + element.id + `">` + element.source + `</option>`;
+        });
+        $('#source_fund').html(html)
     }
 
     function showFormContract(response, id) {
@@ -312,11 +424,14 @@
         $("#method_selection").children("option:selected").val();
         $("#source_founds").val(response.contract.source_founds);
         $("#id_skpd").val(response.skpd.skpd_name);
+        $('#provider').val(response.contract.provider);
         $("#id").val(id);
     }
 
     function saveData() {
         $(".red").text("");
+        $('.text-loading').text('Proses Simpan Data Ke Server Mohon Tunggu');
+        $("#modalLoading").modal("show");
         let data = {
             job_name: $("#job_name").val(),
             ppk_name: $("#ppk_name").val(),
@@ -324,7 +439,8 @@
             contract_value: $("#contract_value").val(),
             procuretment: $("#procuretment").children("option:selected").val(),
             method_selection: $("#method_selection").children("option:selected").val(),
-            source_founds: $("#source_founds").val(),
+            source_founds: $("#source_fund").children('option:selected').val(),
+            provider: $('#provider').val(),
             id: $("#id").val(),
             _token: "{{ csrf_token() }}"
         }
@@ -345,16 +461,21 @@
                     $(".source_founds").text(erors.source_founds);
                     // $(".red").fadeOut(5000);
                 } else if (response.status == 'success') {
+                    $('#modalLoading').modal("hide");
+                    $('.text-success').text(' Data Kontrak Berhasil di simpan !!')
                     $("#success").modal("show");
                     // countDown();
                 }
+            },error:function(){
+                $(".error-msg").text('Error Server Access !!');
+                $("#modal-alert").modal("show");
             }
         });
     }
 
     function showMap() {
         let procuretment = $("#procuretment").children("option:selected").val();
-        console.log(procuretment);
+        showFormAttachement();
     }
 
     function redirect() {
@@ -394,34 +515,29 @@
 
     function sendAttachment() {
         $(".text-muted").text("");
-
-        let data = new FormData();
-        data.append("attachment", $("#file-attachment")[0].files[0]);
-        // data.append("id_attachment", $(".id_attachment").val());
-        // data.append("id", $("#id").val());
-        // console.log(els);
-        $.ajax({
-            type: "POST",
-            url: $("#formUpload").attr("action"),
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            mimeType: 'multipart/form-data',
-            data: data,
-            processData: false,
-            cache: false,
-            contentType: false,
-            dataType: "text",
-            success: function (response) {
-                if (response.status == 'error') {
-                    $(".error-attachment").text(response.erors.attachment);
+        $('.text-loading').text('Proses Upload Data, Mohon tunggu');
+        $('#modalLoading').modal("show");
+        $("#formUpload").ajaxForm({
+            url:"{{ url('upload/store') }}",
+            data:{id_contract:localStorage.getItem('id')},
+            dataType:"JSON",
+            success:function(response){
+                if (response.status=='error') {
+                    $(".error-attachment").text(response.error.attachment);
+                    $('#modalLoading').modal("hide");
+                } else if (response.status=='success') {
+                    showFormAttachement();
+                    $('#modalLoading').modal("hide");
+                    $("#modelUploadAttachment").modal("hide");
+                    $('.text-success').text("Upload file lapiran kontrak success")
+                    $('#success').modal("show");
                 }
-            },
-            error: function (response) {
-                $(".error-msg").text("Server Eroro");
+            },error:function(response){
+                $(".error-attachment").text(response.error.attachment);
+                $(".error-msg").text("Server Eror");
                 $("#modal-alert").modal("show");
             }
-        });
+        }).submit();
     }
 
 </script>

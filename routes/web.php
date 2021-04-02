@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContractController;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\FileAttachmentController;
 use App\Http\Controllers\PrintContract;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\Verificator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,13 +28,18 @@ Route::get('/', function () {
     //     'laravelVersion' => Application::VERSION,
     //     'phpVersion' => PHP_VERSION,
     // ]);
+    // echo csrf_token();
     return redirect()->to("login");
 });
 Route::get('login', ['as' => 'login', function () {
     if (session()->get('data.role') == 1) {
         return redirect()->to("user/dashboard");
+    } elseif (session()->get('data.role') == 3) {
+        return redirect()->to('admin/dashboard');
+    } elseif (session()->get('data.role') == 2) {
+        return redirect()->to('verificator/dashboard');
     } else {
-
+        // session()->flush();
         return view('auth.login');
     }
 }]);
@@ -48,19 +54,29 @@ Route::get('session/logout', function () {
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->name('dashboard');
-Route::middleware(['userCheck'])->group(function () {
-    Route::view('user/dashboard', 'user.dashboard')->middleware('userCheck');
+Route::middleware(['userCheck:1'])->group(function () {
+    Route::view('user/dashboard', 'user.dashboard');
     Route::get('user/contract', [ContractController::class, 'getContract']);
     Route::view('user/contract/create', 'user.createContract');
     Route::post('user/contract/store', [ContractController::class, 'contractCheck']);
     Route::get('user/contract/get', [ContractController::class, 'getContract']);
-    Route::post('user/contract/delete',[ContractController::class,'shoftDelete']);
+    Route::post('user/contract/delete', [ContractController::class, 'shoftDelete']);
     // Route::get('user/contract/edit/{id}',[ContractController::class,'editContract']);
     Route::post('user/contract/find', [ContractController::class, 'findContract']);
     Route::post('user/contract/update', [ContractController::class, 'updateContract']);
     Route::post('user/contract/sendContract', [ContractController::class, 'sendContract']);
     Route::post('user/contract/count', [ContractController::class, 'countContractUser']);
     Route::post('user/contract/upload/attachment', [FileAttachmentController::class, 'store']);
+    Route::post('user/attachment/priview',[AttachmentController::class,'attachmentPriview']);
+});
+// use for admin
+Route::middleware(['userCheck:3'])->group(function () {
+    Route::view('admin/dashboard', 'admin.dashboard');
+});
+// verifikatator
+Route::middleware(['userCheck:2'])->group(function () {
+    Route::view('verificator/dashboard', 'verificator.dashboard');
+    Route::get('verificator/contract/count',[Verificator::class,'countContract']);
 });
 // print
 Route::get('contract/{id}', [PrintContract::class, 'PrintContract']);

@@ -34,8 +34,8 @@
                         <p class="text-center">Use email and password to access </p>
                        <div class="msg-alert" hidden>
                         <div class="alert alert-danger"  role="alert">
-                            <strong>Login Gagal</strong>
-                            <p>Username atau password yang anda gunakan salah !</p>
+                            <strong class="alert-title">Login Gagal</strong>
+                            <p class="alert-text">Username atau password yang anda gunakan salah !</p>
                         </div>
                        </div>
                        @if ($message=Session::get('error'))
@@ -44,8 +44,6 @@
                         <p>{{ $message }}</p>
                     </div>
                        @endif
-                        <form class="mt-4" method="POST" action="{{ url('login/verification') }}">
-                            @csrf
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -125,11 +123,17 @@
                         $(".email").text(response.erors.email);
                         $(".password").text(response.erors.password);
                     } else if (response.status=='failed') {
+                        $('.alert-title').text('Login gagal');
+                        $('.alert-text').text("username dan password yang anda gunakan salah !");
                         $(".msg-alert").removeAttr("hidden");
 
                     }else if (response.status=='success') {
                         window.location.href="{{ url('login') }}";
                     }
+                },error:function(){
+                    $('.alert-title').text('service error');
+                    $('.alert-text').text('sorry service error');
+                    $('.msg-alert').removeAttr('hidden');
                 }
             });
         }

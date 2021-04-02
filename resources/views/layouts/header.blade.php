@@ -27,7 +27,12 @@
             <br />
 
             <!-- sidebar menu -->
+            @if (session()->get('data.role')==1)
+
             @include('layouts.sidebar_user')
+            @elseif (session()->get('data.role')==2)
+            @include('layouts.sidebar_verificator');
+            @endif
             <!-- /sidebar menu -->
 
             <!-- /menu footer buttons -->

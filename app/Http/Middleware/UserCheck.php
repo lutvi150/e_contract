@@ -14,9 +14,9 @@ class UserCheck
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next,$role)
     {
-        if (session()->get('data.role')==1) {
+        if (session()->get('data.role')==$role) {
             return $next($request);
         }
         return redirect()->to('/login');

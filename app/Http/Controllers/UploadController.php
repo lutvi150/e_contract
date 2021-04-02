@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileAttachment;
 use App\Models\Upload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UploadController extends Controller
@@ -36,19 +39,54 @@ class UploadController extends Controller
      */
     public function store(Request $request)
     {
-        $validator=Validator::make($request->all(),[
-            'judul'=>'required',
-            'gambar'=>'required|image|mimes:png,jpg|max:2048'
-        ]);
-        if ($validator->passes()) {
-            $input=$request->all();
-            $input['gambar']=time().'.'.$request->gambar->getClientOriginalExtension();
-            $request->gambar->move(public_path("uploadImage/".$request->judul),$input['gambar']);
-            Upload::create($input);
-            return response()->json(['success'=>'berhasil']);
+        $rules =
+            [
+            'attachment' => 'required|mimetypes:application/pdf|max:10000',
+        ];
+        $message = [
+            'attachment.required' => 'File yang akan di upload tidak boleh kosong',
+            'attachment.mimetypes' => 'Jenis file yang di izinkan hanya pdf',
+            'attchment.max' => 'Maksimal Ukuran file hanyalan 10mb',
+        ];
+        $validator = Validator::make($request->all(), $rules, $message);
+        if ($validator->fails()) {
+            $respon = [
+                'status' => 'error',
+                'msg' => 'Validation Error',
+                'error' => $validator->errors(),
+                'content' => null,
+            ];
         } else {
-            return response()->json(['error'=>$validator->errors()->all()]);
+            $start = microtime(true);
+            $id_contract = decrypt($request->id_contract);
+            $id_attachment=$request->id_attachment;
+            $file = $request->file('attachment');
+            $destination = 'attachment/' . $id_contract;
+            $extention = $file->getClientOriginalExtension();
+            $fileName = time() . '.' . $extention;
+            $file->move($destination, $fileName);
+            $insert = [
+                'id_contract' => $id_contract,
+                'id_attachment' => $id_attachment,
+                'file_attachment' => $fileName,
+            ];
+            $checkFile=FileAttachment::select('file_attachment')->where('id_contract',$id_contract)->where('id_attachment',$id_attachment)->first();
+            if ($checkFile==null) {
+            FileAttachment::insert($insert);
+            } else {
+                File::delete($destination."/".$checkFile['file_attachment']);
+                FileAttachment::where('id_contract',$id_contract)->where('id_attachment',$id_attachment)->update($insert);
+            }
+            $end = microtime(true) - $start;
+            $respon = [
+                'status' => 'success',
+                'msg' => 'File Success uploade',
+                'error' => null,
+                'content' =>null,
+                'executed_time' => $end,
+            ];
         }
+        return response()->json($respon, 200);
     }
 
     /**
