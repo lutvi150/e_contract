@@ -56,7 +56,7 @@ Route::get('session/logout', function () {
 // })->name('dashboard');
 Route::middleware(['userCheck:1'])->group(function () {
     Route::view('user/dashboard', 'user.dashboard');
-    Route::get('user/contract', [ContractController::class, 'getContract']);
+    Route::view('user/contract', 'user.contract');
     Route::view('user/contract/create', 'user.createContract');
     Route::post('user/contract/store', [ContractController::class, 'contractCheck']);
     Route::get('user/contract/get', [ContractController::class, 'getContract']);
@@ -77,6 +77,12 @@ Route::middleware(['userCheck:3'])->group(function () {
 Route::middleware(['userCheck:2'])->group(function () {
     Route::view('verificator/dashboard', 'verificator.dashboard');
     Route::get('verificator/contract/count',[Verificator::class,'countContract']);
+    Route::view('verificator/contract', 'verificator.contract');
+    Route::get('verificator/contract/get', [ContractController::class, 'getContract']);
+    Route::view('verificator/contract/review', 'verificator.createContract');
+    Route::post('verificator/contract/find', [ContractController::class, 'findContract']);
+    Route::post('verificator/attachment/priview',[AttachmentController::class,'attachmentPriview']);
+    Route::post('verificator/sendtoserver', [Verificator::class,'sendVerificator']);
 });
 // print
 Route::get('contract/{id}', [PrintContract::class, 'PrintContract']);
@@ -86,7 +92,7 @@ Route::get('upload', [UploadController::class, 'index']);
 Route::post('upload/store', [UploadController::class, 'store']);
 // use for tes
 Route::get('session/make', [AuthController::class, 'saveSession']);
-Route::get('session/show', [AuthController::class, 'callSession']);
+Route::get('session/show', [AuthController::class, 'callSphpession']);
 Route::get('session/clear', [AuthController::class, 'clearSession']);
 Route::post('login/verification', [AuthController::class, 'formLogin']);
 

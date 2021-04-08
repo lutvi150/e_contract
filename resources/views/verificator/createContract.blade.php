@@ -1,7 +1,5 @@
 @include('layouts.header')
 <script src="{{ asset('assets/jqform/form/dist/jquery.form.min.js') }}"></script>
-{{-- <link rel="stylesheet" href={{ asset('assets/bootstrap-daterangepicker/daterangepicker.css') }}>
-<script src={{ asset('assets/bootstrap-daterangepicker/daterangepicker.js') }}></script> --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
@@ -44,21 +42,22 @@
                                             <input type="text" name="id" id="id" hidden value="">
                                             <div class="form-group">
                                                 <label for="">No. Kontrak</label>
-                                                <input type="text" name="contract_number" id="contract_number"
+                                                <input type="text" name="contract_number" readonly id="contract_number"
                                                     class="form-control" placeholder="" value=""
                                                     aria-describedby="helpId">
                                                 <small id="helpId" class="text-muted red contract_number"></small>
                                             </div>
 
                                             <div class="form-group">
-                                              <label for="">Tanggal Kontrak</label>
-                                              <input type="text" name="" id="contract_date" class="form-control" placeholder="" aria-describedby="helpId">
-                                              <small id="helpId" class="text-muted red"></small>
+                                                <label for="">Tanggal Kontrak</label>
+                                                <input type="text" name="" id="" class="form-control" readonly
+                                                    placeholder="" aria-describedby="helpId">
+                                                <small id="helpId" class="text-muted red"></small>
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Nama Pekerjaan</label>
-                                                <textarea name="job_name" class="form-control" id="job_name" cols="30"
-                                                    rows="2"></textarea>
+                                                <textarea name="job_name" class="form-control" readonly id="job_name"
+                                                    cols="30" rows="2"></textarea>
                                                 <small id="helpId" class="text-muted red job_name"></small>
                                             </div>
                                             <div class="form-group">
@@ -69,7 +68,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="">PPK</label>
-                                                <input type="text" name="ppk_name" value="" id="ppk_name"
+                                                <input type="text" name="ppk_name" value="" readonly id="ppk_name"
                                                     class="form-control" placeholder="" aria-describedby="helpId">
                                                 <small id="helpId" class="text-muted red ppk_name"></small>
                                             </div>
@@ -77,14 +76,14 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="">Pagu</label>
-                                                        <input type="text" name="ceiling" value="" id="ceiling"
+                                                        <input type="text" name="ceiling" readonly value="" id="ceiling"
                                                             class="form-control" placeholder=""
                                                             aria-describedby="helpId">
                                                         <small id="helpId" class="text-muted red ceiling"></small>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Nilai Kontrak</label>
-                                                        <input type="text" name="contract_value" value=""
+                                                        <input type="text" name="contract_value" readonly value=""
                                                             id="contract_value" class="form-control" placeholder=""
                                                             aria-describedby="helpId">
                                                         <small id="helpId"
@@ -92,7 +91,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Penyedia</label>
-                                                        <input type="text" name="provider" id="provider"
+                                                        <input type="text" name="provider" readonly id="provider"
                                                             class="form-control" placeholder=""
                                                             aria-describedby="helpId">
                                                         <small id="helpId" class="text-muted red provider"></small>
@@ -101,7 +100,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="">Jenis Pengadaan </label>
-                                                        <select name="procuretment" class="form-control"
+                                                        <select name="procuretment" disabled class="form-control"
                                                             onchange="showMap()" id="procuretment">
 
                                                         </select>
@@ -109,7 +108,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Metode Pemilihan</label>
-                                                        <select name="method_selection" class="form-control"
+                                                        <select name="method_selection" disabled class="form-control"
                                                             id="method_selection">
 
                                                         </select>
@@ -118,7 +117,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Sumber Dana</label>
-                                                        <select name="source_founds" id="source_fund"
+                                                        <select name="source_founds" disabled id="source_fund"
                                                             class="form-control">
                                                         </select>
                                                         <small id="helpId" class="text-muted red source_founds"></small>
@@ -138,7 +137,6 @@
                                                 <thead>
                                                     <th>Jenis Lampiran</th>
                                                     <th>Status</th>
-                                                    <th>Menu</th>
                                                 </thead>
                                                 <tbody class="attachment">
                                                     <tr>
@@ -184,8 +182,8 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <button class="btn btn-success btn-sm" type="button" onclick="saveData()"><i
-                                    class="fa fa-save"></i> Simpan</button>
+                            <button class="btn btn-success btn-sm" type="button" onclick="verification()"><i
+                                    class="fa fa-check"></i> Verifikasi</button>
                             <a href="{{ url("user/contract") }}" class="btn btn-info btn-sm"><i class="fa fa-reply"></i>
                                 Kembali</a>
                         </div>
@@ -239,31 +237,6 @@
     </div>
 </div>
 
-{{-- upload attachment --}}
-<div class="modal fade" id="modelUploadAttachment" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload Lampiran</h5>
-
-            </div>
-            <div class="modal-body">
-                <form action="{{ url('upload/storae') }}" enctype="multipart/form-data" method="post" id="formUpload">
-                    @csrf
-                    <input type="text" hidden name="id_attachment" class="id_attachment">
-                    <input type="file" name="attachment" id="file-attachment">
-                    <span class="text-muted red error-attachment"></span>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary" onclick="sendAttachment()"><i class="fa fa-upload"></i>
-                    Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Modal loading -->
 <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
@@ -326,13 +299,76 @@
     </div>
 </div>
 
+<!-- Modal verification -->
+<div class="modal fade" id="modelVerification" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verifikasi Kontrak</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <button type="button" class="btn btn-success" onclick="process_verification(true)">Setuju
+                        Kontrak</button>
+                    <button type="button" class="btn btn-danger" onclick="process_verification(false)">Tolak
+                        Kontrak</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal refuse -->
+<div class="modal fade" id="modelRefuse" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Alasan penolakan</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="">Alasan Penolakan</label>
+                    <textarea name="" class="form-control" id="reason" cols="30" rows="10"></textarea>
+                    <small id="helpId" class="text-muted red ereason"></small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-primary" onclick="send_verification()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal  accept-->
+<div class="modal fade" id="modelAccept" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi</h5>
+            </div>
+            <div class="modal-body">
+                Yakin akan terima kontrak ini dan di teruskan ke verifikator berikutnya ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
+                <button type="button" class="btn btn-primary" onclick="send_verification()">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /page content -->
 <script>
     $(document).ready(function () {
         getData();
         map();
     });
-    // $('#date_contract').Daterangepicker();
+
     function map() {
         var map = L.map('mapid').setView([-0.45812, 100.59402], 10);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -373,7 +409,7 @@
         let id = localStorage.getItem('id');
         $.ajax({
             type: "POST",
-            url: "{{ url('user/contract/find') }}",
+            url: "{{ url('verificator/contract/find') }}",
             data: {
                 id: id,
                 _token: "{{ csrf_token() }}"
@@ -400,7 +436,7 @@
         $('#modalLoading').modal('show');
         $.ajax({
             type: "POST",
-            url: "{{ url('user/attachment/priview') }}",
+            url: "{{ url('verificator/attachment/priview') }}",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -424,12 +460,6 @@
                                                         <td>` + element.attachment + `</td>
                                                         <td>
                                                            ` + status + `
-                                                        </td>
-                                                        <td>
-                                                            <a href="#" onclick="uploadAttachment(` + element
-                        .id_attachment + `)"
-                                                                class="btn btn-success btn-sm"><i
-                                                                    class="fa fa-upload"></i> Upload Lampiran</a>
                                                         </td>
                                                     </tr>`;
                 });
@@ -507,51 +537,53 @@
         $("#id").val(id);
     }
 
-    function saveData() {
-        $(".red").text("");
-        $('.text-loading').text('Proses Simpan Data Ke Server Mohon Tunggu');
-        $("#modalLoading").modal("show");
-        let data = {
-            job_name: $("#job_name").val(),
-            ppk_name: $("#ppk_name").val(),
-            ceiling: $("#ceiling").val(),
-            contract_value: $("#contract_value").val(),
-            procuretment: $("#procuretment").children("option:selected").val(),
-            method_selection: $("#method_selection").children("option:selected").val(),
-            source_founds: $("#source_fund").children('option:selected').val(),
-            provider: $('#provider').val(),
-            lat:$('#lat').val(),
-            lng:$('#lng').val(),
-            id: $("#id").val(),
-            _token: "{{ csrf_token() }}"
+    function verification() {
+        $('#modelVerification').modal('show');
+    }
+
+    function process_verification(param) {
+        $('#modelVerification').modal('hide');
+        window.localStorage.setItem('verification', param);
+        if (param == true) {
+            $('#modelAccept').modal('show');
+        } else if (param == false) {
+            $('#modelRefuse').modal('show');
         }
-        // console.log(data);
+    }
+
+    function send_verification() {
+
+        let verification = localStorage.getItem('verification');
+        let reason = $('#reason').val();
+        let data = {
+            verification: verification,
+            reason: reason,
+        }
+        console.log(verification);
+        if (verification == 'false') {
+            if (reason == "") {
+                $('.ereason').text('Maaf Alasan penolakan tidak boleh kosong')
+            } else {
+                send_server_verification(data)
+            }
+        } else {
+            send_server_verification(data)
+
+        }
+
+    }
+
+    function send_server_verification(data) {
         $.ajax({
             type: "POST",
-            url: "{{ url('user/contract/update') }}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ url('verificator/sendtoserver') }}",
             data: data,
             dataType: "JSON",
             success: function (response) {
-                if (response.status == 'error') {
 
-                    let erors = response.erors;
-                    $(".job_name").text(erors.job_name);
-                    $(".ceiling").text(erors.ceiling);
-                    $(".contract_value").text(erors.contract_value);
-                    $(".ppk_name").text(erors.ppk_name);
-                    $(".source_founds").text(erors.source_founds);
-                    $('#modalLoading').modal('hide');
-                    // $(".red").fadeOut(5000);
-                } else if (response.status == 'success') {
-                    $('#modalLoading').modal("hide");
-                    $('.text-success').text(' Data Kontrak Berhasil di simpan !!')
-                    $("#success").modal("show");
-                    // countDown();
-                }
-            },
-            error: function () {
-                $(".error-msg").text('Error Server Access !!');
-                $("#modal-alert").modal("show");
             }
         });
     }

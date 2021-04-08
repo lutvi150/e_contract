@@ -58,7 +58,7 @@ class UploadController extends Controller
             ];
         } else {
             $start = microtime(true);
-            $id_contract = decrypt($request->id_contract);
+            $id_contract = ($request->id_contract);
             $id_attachment=$request->id_attachment;
             $file = $request->file('attachment');
             $destination = 'attachment/' . $id_contract;

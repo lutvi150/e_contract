@@ -46,6 +46,15 @@ class AttachmentSeeder extends Seeder
             ],[
                 'id_attachment'=>8,
                 'attachment'=>'Kontrak'
+            ],[
+                'id_attachment'=>9,
+                'attachment'=>'Gambar'
+            ],[
+                'id_attachment'=>10,
+                'attachment'=>'Spesifikasi Barang'
+            ],[
+                'id_attachment'=>11,
+                'attachment'=>'Daftar Nama Tenaga Ahli '
             ]
         ];
         Attachment::insert($insert);

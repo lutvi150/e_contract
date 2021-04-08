@@ -88,8 +88,34 @@ class AttachmentController extends Controller
     {
         $start=microtime(true);
         $id = $request->id;
-        $id_contract=decrypt($request->id_contract);
+        $id_contract=($request->id_contract);
         Contract::where('id',$id_contract)->update(['procuretment_type'=>$id]);
+       $filter=$this->filterAttachment($id);
+        foreach ($filter as $key => $value) {
+            $checkAttachment=Attachment::select('attachment','id_attachment')->where('id_attachment',$value)->first();
+            $checkFile=FileAttachment::where('id_contract',$id_contract)->where('id_attachment',$value)->pluck('file_attachment')->first();
+            $file='';
+            if ($checkFile!==null) {
+                $file=$id_contract."/".$checkFile;
+            } else {
+                $file=null;
+            }
+            $attachment[]=[
+                'attachment'=>$checkAttachment['attachment'],
+                'id_attachment'=>$checkAttachment['id_attachment'],
+                'file_attachment'=>$file,
+            ];
+        }
+        $end=microtime(true)-$start;
+        $response = [
+            'status' => 'succes',
+            'data' =>$attachment,
+            'executed_time'=>$end,
+        ];
+        return response()->json($response, 200);
+    }
+    public function filterAttachment($id)
+    {
         switch ($id) {
             case 4:
                 $filter = [1, 2, 3, 4];
@@ -104,21 +130,7 @@ class AttachmentController extends Controller
                 $filter = [8];
                 break;
         }
-        foreach ($filter as $key => $value) {
-            $checkAttachment=Attachment::select('attachment','id_attachment')->where('id_attachment',$value)->first();
-            $attachment[]=[
-                'attachment'=>$checkAttachment['attachment'],
-                'id_attachment'=>$checkAttachment['id_attachment'],
-                'file_attachment'=>$id_contract."/".FileAttachment::where('id_contract',$id_contract)->where('id_attachment',$value)->pluck('file_attachment')->first(),
-            ];
-        }
-        $end=microtime(true)-$start;
-        $response = [
-            'status' => 'succes',
-            'data' =>$attachment,
-            'executed_time'=>$end,
-        ];
-        return response()->json($response, 200);
+        return $filter;
     }
 
 }

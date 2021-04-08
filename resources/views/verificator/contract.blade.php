@@ -52,8 +52,6 @@
                         <p class="text-muted font-13 m-b-30">
 
                         </p>
-                        <a href="#" class="btn btn-success btn-sm" onclick="showRegister()"><i
-                                class="fa fa-book"></i>Register Kontrak</a>
                         <table id="data-contract"
                             class="table table-striped data-contract table-bordered dt-responsive nowrap"
                             cellspacing="0" width="100%">
@@ -62,7 +60,8 @@
                                     <th style="width: 10px">No</th>
                                     <th>Nomor Kontrak</th>
                                     <th>Nama Pekerjaan</th>
-                                    <th>Jenis Pengadaan</th>
+                                    <th>Jenis Pekerjaan</th>
+                                    <th>Nama OPD</th>
                                     <th style="width: 10px">Status</th>
                                     <th style="width: 160px">Menu</th>
                                 </tr>
@@ -115,37 +114,13 @@
                 Yakin akan kirim kontrak ini ?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-                <button type="button" class="btn btn-primary" onclick="sendConfirmContract()">Ya</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="sendConfirmContract()">Save</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal register -->
-<div class="modal fade" id="modalRegister" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Register Kontrak</h5>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="">Nomor Kontrak</label>
-                    <input type="text" name="numberContract" id="numberContract" class="form-control" placeholder=""
-                        aria-describedby="helpId">
-                    <small id="helpId" class="text-muted red msg-number-contract">Help text</small>
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" onclick="prosesContract()">Simpan</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal success -->
 <div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
@@ -164,24 +139,7 @@
     </div>
 </div>
 
-<!-- Modal delete data -->
-<div class="modal fade" id="deleteData" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Hapus Data</h5>
 
-            </div>
-            <div class="modal-body">
-                Yakin akan hapus data ?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-                <button type="button" class="btn btn-primary" onclick="sendDeleteData()">Ya</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- Modal eror -->
 <div class="modal fade" id="errorMessage" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -215,7 +173,7 @@
 
     function edit(id) {
         localStorage.setItem("id", id);
-        window.location.href = "{{url('user/contract/create')}}"
+        window.location.href = "{{url('verificator/contract/review')}}"
     }
 
     function showDataContract() {
@@ -224,7 +182,7 @@
             destroy:true,
             processing: true,
             serverSide: true,
-            ajax: "{{url('user/contract/get')}}",
+            ajax: "{{url('verificator/contract/get')}}",
             columnDefs: [{
                     mData: 'id',
                     aTargets: [0],
@@ -258,8 +216,12 @@
                     }
                 },
                 {
+                    mData: 'skpd_name',
+                    aTargets: [4]
+                },
+                {
                     mData: 'status',
-                    aTargets: [4],
+                    aTargets: [5],
                     render: function (data) {
                         let css = '';
                         let status = '';
@@ -280,7 +242,7 @@
                     }
                 }, {
                     mData: getidAndSatus,
-                    aTargets: [5]
+                    aTargets: [6]
                 }
             ],
         });
@@ -288,14 +250,10 @@
     function getidAndSatus(data,type,dataToSet) {
 
         let html='';
-        if (data.status=='draf') {
-            html=`<a href="#" class="btn btn-success btn-sm"
-                        onclick="sendContract(`+data.id+`);"><i class="fa fa-send"></i> Kirim</a>
-                    <a href="#" data-id="" onclick="edit(`+data.id+`)"
-                        class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
-                    <a href="#" class="btn btn-danger btn-sm"
-                        onclick="deleteData(`+data.id+`)"><i class="fa fa-trash"></i>
-                        Hapus</a>`;
+        if (data.status=='process') {
+            html=`<a href="#" data-id="" onclick="edit(`+data.id+`)"
+                        class="btn btn-warning btn-sm"><i class="fa fa-search"></i> Detail</a>
+                    `;
         } else if (data.status=='success') {
             html=`<a href="{{ url('contract/`+data.id+`')}}" target="_blank"
                         class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Cetak</a>
@@ -399,37 +357,8 @@
         }
     }
 
-    function deleteData(id) {
-        $("#id").val(id);
-        $("#deleteData").modal("show");
-    }
 
-    function sendDeleteData() {
-        let id = $("#id").val();
-        $.ajax({
-            type: "POSt",
-            url: "{{url('user/contract/delete')}}",
-            data: {
-                id: id,
-                _token: '{{ csrf_token() }}'
-            },
-            dataType: "JSON",
-            success: function (response) {
-                showDataContract();
-                $('#deleteData').modal("hide");
-                $(".error-title").text("Success");
-                $('.error-msg').text('Data berhasil di hapus');
-                $('#errorMessage').modal("show");
 
-            },
-            error: function () {
-                $('#deleteData').modal("hide");
-                $(".error-title").text("Eror Webservice");
-                $('.error-msg').text('Eror Webservice');
-                $('#errorMessage').modal("show");
-            }
-        });
-    }
 
     function hideText() {
         setTimeout(function () {

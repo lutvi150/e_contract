@@ -25,4 +25,15 @@ class Verificator extends Controller
         ];
         return response()->json($respon,200);
     }
+    public function sendVerificator(Request $requests)
+    {
+        $start=microtime(true);
+        $respon=[
+            'status'=>'success',
+            'msg'=>null,
+            'content'=>null,
+            'executed_time'=>microtime(true)-$start,
+        ];
+        return response()->json($respon,200);
+    }
 }
