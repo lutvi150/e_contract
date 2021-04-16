@@ -15,7 +15,7 @@ class CreateFileAttachmentsTable extends Migration
     {
         Schema::create('file_attachments', function (Blueprint $table) {
             $table->id();
-            $table->string('id_contract',10)->index();
+            $table->char('id_contract',36)->index();
             $table->string('id_attachment',10);
             $table->text('file_attachment');
             $table->timestamps();

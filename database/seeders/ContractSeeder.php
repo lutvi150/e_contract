@@ -29,6 +29,6 @@ class ContractSeeder extends Seeder
             'id_user'=>3,
             'provider'=>'CV Ani',
         ];
-        Contract::insert($insert);
+        Contract::create($insert);
     }
 }

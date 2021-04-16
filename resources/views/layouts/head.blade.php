@@ -25,3 +25,4 @@
 
 <!-- jQuery -->
 <script src="{{asset('assets/jquery/dist/jquery.min.js')}}"></script>
+<script >let url='{{ url('') }}';</script>

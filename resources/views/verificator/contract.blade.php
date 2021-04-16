@@ -52,13 +52,14 @@
                         <p class="text-muted font-13 m-b-30">
 
                         </p>
+                        <a href="{{ url('contract/'.encrypt(1)) }}" target="_blank">Tes</a>
                         <table id="data-contract"
                             class="table table-striped data-contract table-bordered dt-responsive nowrap"
                             cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th style="width: 10px">No</th>
-                                    <th>Nomor Kontrak</th>
+                                    <th>Nomor Kontrak </th>
                                     <th>Nama Pekerjaan</th>
                                     <th>Jenis Pekerjaan</th>
                                     <th>Nama OPD</th>
@@ -251,12 +252,14 @@
 
         let html='';
         if (data.status=='process') {
-            html=`<a href="#" data-id="" onclick="edit(`+data.id+`)"
+            html=`<a href="#" data-id="" onclick="edit('`+data.id+`')"
                         class="btn btn-warning btn-sm"><i class="fa fa-search"></i> Detail</a>
                     `;
         } else if (data.status=='success') {
             html=`<a href="{{ url('contract/`+data.id+`')}}" target="_blank"
-                        class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Cetak</a>
+                        class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Cetak</a><a href="#" data-id="" onclick="edit('`+data.id+`')"
+                        class="btn btn-warning btn-sm"><i class="fa fa-search"></i> Detail</a>
+
                     <a href="#" class="btn btn-warning btn-sm"><i
                             class="fa fa-hand-o-up"></i>Adendum</a>`;
         }

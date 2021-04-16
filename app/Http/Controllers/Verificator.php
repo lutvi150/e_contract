@@ -25,9 +25,15 @@ class Verificator extends Controller
         ];
         return response()->json($respon,200);
     }
-    public function sendVerificator(Request $requests)
+    public function sendVerificator(Request $request)
     {
         $start=microtime(true);
+        if ($request->verification==true) {
+            $status='success';
+        } else {
+            $status='refuse';
+        }
+        Contract::find($request->id)->update(['status'=>$status]);
         $respon=[
             'status'=>'success',
             'msg'=>null,

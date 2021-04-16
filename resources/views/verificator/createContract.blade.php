@@ -38,8 +38,8 @@
                                 <div role="tabpanel" class="tab-pane fade active in" id="data_contract"
                                     aria-labelledby="home-tab">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <input type="text" name="id" id="id" hidden value="">
+                                        <input type="text" name="id" id="id" hidden value="">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="">No. Kontrak</label>
                                                 <input type="text" name="contract_number" readonly id="contract_number"
@@ -47,44 +47,66 @@
                                                     aria-describedby="helpId">
                                                 <small id="helpId" class="text-muted red contract_number"></small>
                                             </div>
-
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="">Tanggal Kontrak</label>
-                                                <input type="text" name="" id="" class="form-control" readonly
-                                                    placeholder="" aria-describedby="helpId">
+                                                <input type="text" name="" id="contract_date" readonly
+                                                    class="form-control" placeholder="" aria-describedby="helpId">
                                                 <small id="helpId" class="text-muted red"></small>
                                             </div>
+                                        </div>
+                                        <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="">Nama Pekerjaan</label>
                                                 <textarea name="job_name" class="form-control" readonly id="job_name"
                                                     cols="30" rows="2"></textarea>
                                                 <small id="helpId" class="text-muted red job_name"></small>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="">SKPD</label>
-                                                <input type="text" name="id_skpd" readonly class="form-control" value=""
-                                                    id="id_skpd">
-                                                <small id="helpId" class="text-muted red"></small>
-                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="">PPK</label>
-                                                <input type="text" name="ppk_name" value="" readonly id="ppk_name"
+                                                <input type="text" name="ppk_name" readonly value="" id="ppk_name"
                                                     class="form-control" placeholder="" aria-describedby="helpId">
                                                 <small id="helpId" class="text-muted red ppk_name"></small>
                                             </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <table class="table text-center">
+                                                <thead>
+                                                    <th style="width: 1px">No</th>
+                                                    <th style="text-align: center">Kecamatan</th>
+                                                    <th style="text-align: center">Desa</th>
+                                                </thead>
+                                                <tbody id="district_value">
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            -
+                                                        </td>
+                                                        <td>
+                                                            -
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="">Pagu</label>
-                                                        <input type="text" name="ceiling" readonly value="" id="ceiling"
-                                                            class="form-control" placeholder=""
-                                                            aria-describedby="helpId">
+                                                        <input type="text" data-type="currency" readonly name="ceiling"
+                                                            value="" id="ceiling" class="form-control"
+                                                            placeholder="Rp 1,000,000.00" aria-describedby="helpId">
                                                         <small id="helpId" class="text-muted red ceiling"></small>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="">Nilai Kontrak</label>
-                                                        <input type="text" name="contract_value" readonly value=""
-                                                            id="contract_value" class="form-control" placeholder=""
+                                                        <input type="text" data-type="currency" readonly
+                                                            name="contract_value" value="" id="contract_value"
+                                                            class="form-control" placeholder="Rp 1,000,000.00"
                                                             aria-describedby="helpId">
                                                         <small id="helpId"
                                                             class="text-muted red contract_value"></small>
@@ -123,7 +145,6 @@
                                                         <small id="helpId" class="text-muted red source_founds"></small>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
 
@@ -182,8 +203,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <button class="btn btn-success btn-sm" type="button" onclick="verification()"><i
-                                    class="fa fa-check"></i> Verifikasi</button>
+                            <button id="verification" type="button" onclick="verification()"></button>
                             <a href="{{ url("user/contract") }}" class="btn btn-info btn-sm"><i class="fa fa-reply"></i>
                                 Kembali</a>
                         </div>
@@ -224,10 +244,10 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Success</h5>
+                <h5 class="modal-title title-success">Success</h5>
             </div>
             <div class="modal-body">
-                <p class="text-success">
+                <p class="text-success msg-success">
                     Data Kontrak Berhasil di simpan !!</p>
             </div>
             <div class="modal-footer">
@@ -421,6 +441,7 @@
                 categoryProcurement(response);
                 sourceFund(response);
                 showMap();
+                change_btn_verification(response.data.contract.status);
                 $(".loading").hide();
                 $(".formCreate").show();
             },
@@ -534,6 +555,7 @@
         $("#source_founds").val(response.contract.source_founds);
         $("#id_skpd").val(response.skpd.skpd_name);
         $('#provider').val(response.contract.provider);
+        $('#contract_date').val(response.contract.contract_date);
         $("#id").val(id);
     }
 
@@ -558,6 +580,7 @@
         let data = {
             verification: verification,
             reason: reason,
+            id: localStorage.getItem('id'),
         }
         console.log(verification);
         if (verification == 'false') {
@@ -574,6 +597,8 @@
     }
 
     function send_server_verification(data) {
+        $('#modelAccept').modal('hide');
+        $('#modalLoading').modal('show');
         $.ajax({
             type: "POST",
             headers: {
@@ -583,9 +608,32 @@
             data: data,
             dataType: "JSON",
             success: function (response) {
-
+                $('#modalLoading').modal('hide');
+                if (response.status == 'success') {
+                    $('.title-success').text('Success');
+                    $('.msg-success').text('Proses verifikasi berhasil di lakukan');
+                    $('#success').modal('show');
+                    change_btn_verification();
+                }
+            },
+            error: function () {
+                $('#modalLoading').modal('hide');
+                $(".error-msg").text("Server Eror");
+                $("#modal-alert").modal("show");
             }
         });
+    }
+
+    function change_btn_verification(status) {
+        $('#verification').removeAttr('class');
+        if (status == 'process') {
+            $('#verification').html(`<i class="fa fa-check"></i> Verifikasi`);
+            $("#verification").addClass('btn btn-success btn-sm');
+        } else {
+
+            $('#verification').html(`<i class="fa fa-ban"></i> Batalkan Verifikasi`);
+            $("#verification").addClass('btn btn-danger btn-sm');
+        }
     }
 
     function showMap() {

@@ -7,6 +7,7 @@ use App\Models\FileAttachment;
 use App\Models\Geolocation;
 use App\Models\skpd;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -136,10 +137,11 @@ class ContractController extends Controller
         $rules = [
             'job_name' => 'required',
             'ppk_name' => 'required',
-            'ceiling' => 'required|numeric',
-            'contract_value' => 'required|numeric',
+            'ceiling' => 'required',
+            'contract_value' => 'required',
             'source_founds' => 'required|alpha_dash',
             'provider' => 'required',
+            'contract_date'=>'required'
         ];
         $message = [
             'job_name.required' => 'Nama Pekerjaan Wajib di Isi',
@@ -148,6 +150,7 @@ class ContractController extends Controller
             'contract_value.required' => 'Nilai Kontrak Wajib di Isi',
             'source_founds.required' => 'Sumber Dana Wajib di Isi',
             'provider.required' => 'Nama Penyedia Harus di isi',
+            'contract_date'=>'Tanggal Kontrak Wajib di Isi'
         ];
         $validator = Validator::make($request->all(), $rules, $message);
         if ($validator->fails()) {
@@ -160,15 +163,17 @@ class ContractController extends Controller
             return response()->json($respon, 200);
         } else {
             $id = ($request->id);
+            $replace=['Rp',','];
             $insert = [
                 'job_name' => $request->job_name,
                 'ppk_name' => $request->ppk_name,
-                'ceiling' => $request->ceiling,
-                'contract_value' => $request->contract_value,
+                'ceiling' => str_replace($replace,'',$request->ceiling),
+                'contract_value' => str_replace($replace,'',$request->contract_value),
                 'source_founds' => $request->source_founds,
                 'procuretment_type' => $request->procuretment,
                 'method_selection' => $request->method_selection,
                 'provider'=>$request->provider,
+                'contract_date'=>$request->contract_date,
             ];
             // if ($request->procuretment==4) {
             //     $checkGeo=Geolocation::where()
@@ -276,5 +281,23 @@ class ContractController extends Controller
             'data' => $data,
         ];
         return response()->json($respon, 200);
+    }
+    public function getDistrict(Type $var = null)
+    {
+        $respon=Http::get('https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=1305');
+       return $respon->body();
+    }
+    public function getVillages(Request $request)
+    {
+        $respon=Http::get('https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan='.$request->district_id);
+       return $respon->body();
+    }
+    // use this for tes uuid
+    public function getUiid(Request $request)
+    {
+        for ($i=0; $i <2000 ; $i++) {
+            $model=Contract::create()->id;
+        }
+        // return response()->json($model);
     }
 }

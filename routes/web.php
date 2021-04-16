@@ -68,6 +68,7 @@ Route::middleware(['userCheck:1'])->group(function () {
     Route::post('user/contract/count', [ContractController::class, 'countContractUser']);
     Route::post('user/contract/upload/attachment', [FileAttachmentController::class, 'store']);
     Route::post('user/attachment/priview',[AttachmentController::class,'attachmentPriview']);
+    Route::post('user/map/save',);
 });
 // use for admin
 Route::middleware(['userCheck:3'])->group(function () {
@@ -88,8 +89,12 @@ Route::middleware(['userCheck:2'])->group(function () {
 Route::get('contract/{id}', [PrintContract::class, 'PrintContract']);
 // development
 Route::view('dev/map', 'dev.map');
+Route::view('dev/courency', 'dev.courency');
+Route::get('uuid/tes',[ContractController::class,'getUiid']);
 Route::get('upload', [UploadController::class, 'index']);
 Route::post('upload/store', [UploadController::class, 'store']);
+Route::get('district',[ContractController::class,'getDistrict']);
+Route::post('villages',[ContractController::class,'getVillages']);
 // use for tes
 Route::get('session/make', [AuthController::class, 'saveSession']);
 Route::get('session/show', [AuthController::class, 'callSphpession']);

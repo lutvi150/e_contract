@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Geolocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GeolocationController extends Controller
 {
@@ -35,7 +36,34 @@ class GeolocationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $start=microtime(true);
+        $rules=[
+            'lat'=>'required',
+            'lng'=>'required',
+        ];
+        $message=[
+            'lat.required'=>'Lat lokasi tidak boleh kosong',
+            'lng.required'=>'Lng lokasi tidak boleh kosong'
+        ];
+        $validator=Validator::make($request->all(),$rules,$message);
+        if ($validator->fails()) {
+            $respon=[
+                'status'=>'error',
+                'msg'=>'Validation Error',
+                'error'=>$validator->errors(),
+                'content'=>null,
+                'executed_time'=>microtime(true)-$start,
+            ];
+        } else {
+            $respon=[
+                'status'=>'error',
+                'msg'=>'Validation Error',
+                'error'=>$validator->errors(),
+                'content'=>null,
+                'executed_time'=>microtime(true)-$start,
+            ];
+        }
+        return response()->json($respon);
     }
 
     /**

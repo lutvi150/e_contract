@@ -11,7 +11,7 @@ class PrintContract extends Controller
 {
     public function PrintContract(Request $request)
     {
-        $contract = Contract::where('id', decrypt($request->id))->first();
+        $contract = Contract::where('id', ($request->id))->first();
         $spkd=skpd::where('id_skpd',$contract->id_skpd)->select('id_skpd','skpd_name')->first();
         $this->design($contract,$spkd);
         // return view('print.print',['contract'=>$contract]);

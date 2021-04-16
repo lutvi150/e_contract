@@ -290,11 +290,11 @@
         let html='';
         if (data.status=='draf') {
             html=`<a href="#" class="btn btn-success btn-sm"
-                        onclick="sendContract(`+data.id+`);"><i class="fa fa-send"></i> Kirim</a>
-                    <a href="#" data-id="" onclick="edit(`+data.id+`)"
+                        onclick="sendContract('`+data.id+`');"><i class="fa fa-send"></i> Kirim</a>
+                    <a href="#" data-id="" onclick="edit('`+data.id+`')"
                         class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
                     <a href="#" class="btn btn-danger btn-sm"
-                        onclick="deleteData(`+data.id+`)"><i class="fa fa-trash"></i>
+                        onclick="deleteData('`+data.id+`')"><i class="fa fa-trash"></i>
                         Hapus</a>`;
         } else if (data.status=='success') {
             html=`<a href="{{ url('contract/`+data.id+`')}}" target="_blank"
