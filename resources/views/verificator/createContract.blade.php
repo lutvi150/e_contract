@@ -73,7 +73,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <table class="table text-center">
+                                            <table class="table table-bordered">
                                                 <thead>
                                                     <th style="width: 1px">No</th>
                                                     <th style="text-align: center">Kecamatan</th>
@@ -383,6 +383,8 @@
     </div>
 </div>
 <!-- /page content -->
+
+<script src={{ asset('js/currency.js') }}></script>
 <script>
     $(document).ready(function () {
         getData();
@@ -436,6 +438,7 @@
             },
             dataType: "JSON",
             success: function (response) {
+                getPackageLocation();
                 showFormContract(response.data, id)
                 methodSelection(response);
                 categoryProcurement(response);
@@ -473,7 +476,7 @@
                     if (element.file_attachment !== null) {
                         status = `<a href="#" onclick="priviewAttachment('` + element
                             .file_attachment + `','` + element.attachment +
-                            `')" class="label label-success"><i class="fa fa-check" ></i> Sudah di Upload (Klik Untuk Priview)</a>`;
+                            `')" class="label label-success"><i class="fa fa-check" ></i> Klik Untuk Priview</a>`;
                     } else {
                         status = ` <label for="" class="label label-danger">Belum di Upload</label>`
                     }
@@ -501,6 +504,56 @@
         $('.title-show-attachment').text(title);
         $('#modelShowAttachment').modal('show');
     }
+    // get location select
+    function getPackageLocation() {
+    $.ajax({
+        type: "POST",
+        url: url + "/verificator/location/edit",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            id: localStorage.getItem('id')
+        },
+        dataType: "JSON",
+        success: function (response) {
+            localStorage.setItem('count_row', response.content.length);
+
+            if (response.content.length > 0) {
+                let count_row = localStorage.getItem('count_row');
+                let sum_row = '';
+                if (count_row == null) {
+                    sum_row = 2
+                    localStorage.setItem('count_row', sum_row);
+                } else {
+                    sum_row = parseInt(count_row) + 1;
+                    localStorage.setItem('count_row', sum_row);
+                }
+                let datadistric = JSON.parse(localStorage.getItem('distric'));
+
+                let html = '';
+                let number = 1;
+                let newNumber = 1;
+                let button = '';
+                response.content.forEach(element => {
+
+                    newNumber = number++;
+
+                    html += `<tr id="row">
+                    <td>` + newNumber + `</td>
+                    <td>`+element.district_name+`
+                    </td>
+                    <td>
+                        `+element.villages_name+`
+                    </td>
+                </tr>`;
+                });
+                $('#district_value').html(html);
+            }
+        }
+    });
+}
+
     // function for show method selection
     function methodSelection(response) {
         let html = '';
@@ -557,7 +610,14 @@
         $('#provider').val(response.contract.provider);
         $('#contract_date').val(response.contract.contract_date);
         $("#id").val(id);
+        make_currency();
     }
+    function make_currency() {
+    let contract_value = $('#contract_value');
+    let ceiling = $('#ceiling');
+    formatCurrency(contract_value);
+    formatCurrency(ceiling);
+}
 
     function verification() {
         $('#modelVerification').modal('show');

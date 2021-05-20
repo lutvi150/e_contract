@@ -16,10 +16,15 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $validator=Validator::make($request->all(),[
+        $rules=[
             'email'=>'required',
-            'password'=>'required'
-        ]);
+            'password'=>'required',
+        ];
+        $message=[
+            'email.required'=>'Email tiddak boleh kosong',
+            'password.required'=>'Password tidak boleh kosong'
+        ];
+        $validator=Validator::make($request->all(),$rules,$message);
         if ($validator->fails()) {
             $respon=[
                 'status'=>'error',
@@ -85,10 +90,15 @@ class AuthController extends Controller
     }
     public function formLogin(Request $request)
     {
-        $validator=Validator::make($request->all(),[
+        $rules=[
             'email'=>'required',
-            'password'=>'required'
-        ]);
+            'password'=>'required',
+        ];
+        $message=[
+            'email.required'=>'Email tidak boleh kosong',
+            'password.required'=>'Password tidak boleh kosong'
+        ];
+        $validator=Validator::make($request->all(),$rules,$message);
         if ($validator->fails()) {
             $respon=[
                 'status'=>'validationerror',

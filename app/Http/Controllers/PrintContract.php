@@ -4,26 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use App\Models\skpd;
+use DNS2D;
 use Illuminate\Http\Request;
-Use DNS1D;
-Use DNS2D;
+use Illuminate\Support\Facades\App;
+use PDF;
+
 class PrintContract extends Controller
 {
     public function PrintContract(Request $request)
     {
         $contract = Contract::where('id', ($request->id))->first();
-        $spkd=skpd::where('id_skpd',$contract->id_skpd)->select('id_skpd','skpd_name')->first();
-        $this->design($contract,$spkd);
+        $skpd = skpd::where('id_skpd', $contract->id_skpd)->select('id_skpd', 'skpd_name')->first();
+        $this->design($contract,$skpd);
         // return view('print.print',['contract'=>$contract]);
+        // $response = [
+        //     'contract' => $contract,
+        //     'skpd' => $skpd,
+        // ];
+        // $pdf = PDF::loadview('print.print', $response)->setPaper('a4');
+        // return $pdf->stream();
+        // dd($response);
     }
 
     public function barcodeTes(Request $request)
     {
         return view('print.barcode');
     }
-    public function design($contract,$skpd)
+    public function newDesign($contract, $skpd)
     {
-        $template='<!DOCTYPE html>
+
+    }
+    public function design($contract, $skpd)
+    {
+        $template = '<!DOCTYPE html>
         <html lang="en">
 
         <head>
@@ -77,7 +90,7 @@ class PrintContract extends Controller
                     </tr>
                     <tr>
                         <td class="noline">
-                            '.url('').'
+                            ' . url('') . '
                         </td>
                     </tr>
                     <tr>
@@ -101,15 +114,15 @@ class PrintContract extends Controller
                     </tr>
                     <tr>
                         <td>Nama Pekerjaan</td>
-                        <td>: '.$contract->job_name.'</td>
+                        <td>: ' . $contract->job_name . '</td>
                     </tr>
                     <tr>
                         <td>No. Kontrak</td>
-                        <td>: '.$contract->contract_number.'</td>
+                        <td>: ' . $contract->contract_number . '</td>
                     </tr>
                     <tr>
                         <td>No. Adendum</td>
-                        <td>:'.$contract->contract_number.'</td>
+                        <td>:' . $contract->contract_number . '</td>
                     </tr>
                     <tr>
                         <td>No. BA PHO</td>
@@ -117,19 +130,19 @@ class PrintContract extends Controller
                     </tr>
                     <tr>
                         <td>SKPD</td>
-                        <td>: '.$skpd->skpd_name.'</td>
+                        <td>: ' . $skpd->skpd_name . '</td>
                     </tr>
                     <tr>
                         <td>Pagu</td>
-                        <td>: Rp.'.number_format($contract->ceiling).'</td>
+                        <td>: Rp.' . number_format($contract->ceiling) . '</td>
                     </tr>
                     <tr>
                         <td>Nilai Kontrak</td>
-                        <td>: Rp.'.number_format($contract->contract_value).'</td>
+                        <td>: Rp.' . number_format($contract->contract_value) . '</td>
                     </tr>
                     <tr>
                         <td>PPK</td>
-                        <td>: '.$contract->ppk_name.'</td>
+                        <td>: ' . $contract->ppk_name . '</td>
                     </tr>
                 </table>
                 <table style="width: 100%;" >
@@ -146,7 +159,7 @@ class PrintContract extends Controller
                     </tr>
                     <tr>
                         <td class="noline">
-                            <img style="width: 200px;height: 200px;" src="data:image/png;base64,'.DNS2D::getBarcodePNG(url('')."/check/".encrypt($contract->id), 'QRCODE').'" alt="" srcset="">
+                            <img style="width: 200px;height: 200px;" src="data:image/png;base64,' . DNS2D::getBarcodePNG(url('') . "/check/" . encrypt($contract->id), 'QRCODE') . '" alt="" srcset="">
                         </td>
                         <td class="noline" style="text-align: center;">
                             Batusangkar, 11 Februari 2021 <br>
@@ -164,7 +177,7 @@ class PrintContract extends Controller
         </html>
         ';
         require_once __DIR__ . '../../../../vendor/autoload.php';
-        $mpdf = new \Mpdf\Mpdf();
+        $mpdf = new \Mpdf\Mpdf(['format'=>'A4']);
         $mpdf->WriteHTML($template);
         $mpdf->Output();
     }

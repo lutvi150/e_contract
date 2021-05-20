@@ -6,36 +6,39 @@ $(document).ready(function () {
 });
 
 function check_district() {
-    let html='';
+    let html = '';
     let datadistric = JSON.parse(localStorage.getItem('distric'));
     if (datadistric == null) {
         district();
     } else {
         datadistric.kecamatan.forEach(element => {
-            html+=`<option value="`+element.id+`">`+element.nama+`</option>`;
+            html += `<option value="` + element.id + `">` + element.nama + `</option>`;
         });
         $("#district1").html(html);
     }
 }
+
 function check_villages(id) {
 
     $('.text-loading').text('Loading Data Mohon Tunggu !!!!');
     $('#modalLoading').modal('show');
-    let district_id=$('#district'+id).children('option:selected').val();
+    let district_id = $('#district' + id).children('option:selected').val();
     $.ajax({
         type: "POST",
-        url: url+"/villages",
+        url: url + "/villages",
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        data: {district_id:district_id},
+        data: {
+            district_id: district_id
+        },
         dataType: "JSON",
         success: function (response) {
-            let html="";
+            let html = "";
             response.kelurahan.forEach(element => {
-                html+=`<option value="`+element.id+`">`+element.nama+`</option>`;
+                html += `<option value="` + element.id + `">` + element.nama + `</option>`;
             });
-            $("#villages"+id).html(html);
+            $("#villages" + id).html(html);
             $('#modalLoading').modal('hide');
         },
         error: function (resposnse) {
@@ -44,7 +47,7 @@ function check_villages(id) {
             $("#modal-alert").modal("show");
         }
     });
- }
+}
 
 function district(id) {
     $('.text-loading').text('Loading Data Mohon Tunggu !!!!');
@@ -57,12 +60,12 @@ function district(id) {
         url: url + "/district",
         dataType: "JSON",
         success: function (response) {
-            let html="";
+            let html = "";
             localStorage.setItem('distric', JSON.stringify(response))
             response.kecamatan.forEach(element => {
-                html+=`<option value="`+element.id+`">`+element.nama+`</option>`;
+                html += `<option value="` + element.id + `">` + element.nama + `</option>`;
             });
-            $("#district"+id).html(html);
+            $("#district" + id).html(html);
             $('#modalLoading').modal('hide');
         },
         error: function (resposnse) {
@@ -84,17 +87,17 @@ function district_add() {
         localStorage.setItem('count_row', sum_row);
     }
     let datadistric = JSON.parse(localStorage.getItem('distric'));
-    let option='';
+    let option = '';
     datadistric.kecamatan.forEach(element => {
-        option+=`<option value="`+element.id+`">`+element.nama+`</option>`;
+        option += `<option value="` + element.id + `">` + element.nama + `</option>`;
     });
     let html = `                                                    <tr id="row` + sum_row + `">
      <td>` + sum_row + `</td>
      <td>
-         <select name="district[]" class="form-control" onchange="check_villages(`+sum_row+`)" id="district`+sum_row+`">`+option+`</select>
+         <select name="district[]" class="form-control" onchange="check_villages(` + sum_row + `)" id="district` + sum_row + `">` + option + `</select>
      </td>
      <td>
-         <select name="villages[]" class="form-control"  id="villages`+sum_row+`"></select>
+         <select name="villages[]" class="form-control"  id="villages` + sum_row + `"></select>
      </td>
      <td>
          <button type="button" onclick="remove_row('row` + sum_row + `')" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
@@ -106,9 +109,9 @@ function district_add() {
 }
 
 function remove_row(param) {
-    let count_row=localStorage.getItem('count_row');
-    localStorage.setItem('count_row',parseInt(count_row)-1);
-    $('#'+param).remove();
+    let count_row = localStorage.getItem('count_row');
+    localStorage.setItem('count_row', parseInt(count_row) - 1);
+    $('#' + param).remove();
 }
 $('#contract_date').datetimepicker({
     format: "DD/MM/YYYY"
@@ -150,6 +153,76 @@ function refresh() {
     location.reload();
 }
 
+function getPackageLocation() {
+    $.ajax({
+        type: "POST",
+        url: url + "/user/location/edit",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            id: localStorage.getItem('id')
+        },
+        dataType: "JSON",
+        success: function (response) {
+            localStorage.setItem('count_row', response.content.length);
+
+            if (response.content.length > 0) {
+                let count_row = localStorage.getItem('count_row');
+                let sum_row = '';
+                if (count_row == null) {
+                    sum_row = 2
+                    localStorage.setItem('count_row', sum_row);
+                } else {
+                    sum_row = parseInt(count_row) + 1;
+                    localStorage.setItem('count_row', sum_row);
+                }
+                let datadistric = JSON.parse(localStorage.getItem('distric'));
+
+                let html = '';
+                let number = 1;
+                let newNumber = 1;
+                let button = '';
+                response.content.forEach(element => {
+                    let option = '';
+                    datadistric.kecamatan.forEach(element2 => {
+                        let selected='';
+                        if (element.district==element2.id) {
+                            selected='selected'
+                        } else{
+                            selected='';
+                        }
+                        option += `<option `+selected+` value="` + element2.id + `">` + element2.nama + `</option>`;
+                    });
+                    newNumber = number++;
+                    if (newNumber == 1) {
+                        button = `<button type="button" onclick="district_add(1)" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></button>`;
+                    } else {
+                        button = `<button type="button" onclick="remove_row('row` + newNumber + `')" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>`;
+                    }
+                    html += `<tr id="row">
+                    <td>` + newNumber + `</td>
+                    <td>
+                        <select name="district[]" class="form-control" onchange="check_villages('` + newNumber + `')" id="district`+newNumber+`">
+                        `+option+`
+                        </select>
+                    </td>
+                    <td>
+                        <select name="villages[]" class="form-control"  id="villages` + newNumber + `">
+                        <option value="`+element.villages+`">`+element.villages_name+`</option>
+                        </select>
+                    </td>
+                    <td>
+                        ` + button + `
+
+                    </td>
+                </tr>`;
+                });
+                $('#district_value').html(html);
+            }
+        }
+    });
+}
 
 function getData() {
     let id = localStorage.getItem('id');
@@ -164,6 +237,10 @@ function getData() {
         },
         dataType: "JSON",
         success: function (response) {
+            if (response.data.contract.procuretment_type == 4) {
+                mapShow();
+            }
+            getPackageLocation();
             showFormContract(response.data, id)
             methodSelection(response);
             categoryProcurement(response);
@@ -229,7 +306,7 @@ function showFormAttachement() {
 }
 // prview attachment
 function priviewAttachment(param, title) {
-    $('.show-file-attachment').html(`<embed src="`+url+`/attachment/`+param+`" style="width: 100%;height:700px">`)
+    $('.show-file-attachment').html(`<embed src="` + url + `/attachment/` + param + `" style="width: 100%;height:700px">`)
     $('.title-show-attachment').text(title);
     $('#modelShowAttachment').modal('show');
 }
@@ -303,28 +380,12 @@ function saveData() {
     $(".red").text("");
     $('.text-loading').text('Proses Simpan Data Ke Server Mohon Tunggu');
     $("#modalLoading").modal("show");
-    let data = {
-        job_name: $("#job_name").val(),
-        ppk_name: $("#ppk_name").val(),
-        ceiling: $("#ceiling").val(),
-        contract_value: $("#contract_value").val(),
-        procuretment: $("#procuretment").children("option:selected").val(),
-        method_selection: $("#method_selection").children("option:selected").val(),
-        source_founds: $("#source_fund").children('option:selected').val(),
-        provider: $('#provider').val(),
-        contract_date: $('#contract_date').val(),
-        lat: $('#lat').val(),
-        lng: $('#lng').val(),
-        id: $("#id").val(),
-    }
-    // console.log(data);
-    $.ajax({
-        type: "POST",
-        url: url + "/user/contract/update",
+    let newUrl = $('#saveContract').attr('action');
+    $("#saveContract").ajaxForm({
+        url: newUrl,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        data: data,
         dataType: "JSON",
         success: function (response) {
             if (response.status == 'error') {
@@ -343,13 +404,18 @@ function saveData() {
                 $('.text-success').text(' Data Kontrak Berhasil di simpan !!')
                 $("#success").modal("show");
                 // countDown();
+            } else if (response.status == 'map not found') {
+                $('#modalLoading').modal("hide");
+                $('.error-text').text(response.msg)
+                $('.error-title').text('Gagal Simpan Data');
+                $("#modal-error").modal("show");
             }
         },
         error: function () {
             $(".error-msg").text('Error Server Access !!');
             $("#modal-alert").modal("show");
         }
-    });
+    }).submit();
 }
 
 function showMap() {
@@ -378,20 +444,57 @@ function showMap() {
 }
 
 function saveMap() {
+    $('.red').text('');
     let data = {
         lat: $('#lat').val(),
-        lnt: $('#lng').val(),
+        lng: $('#lng').val(),
+        id_contract: localStorage.getItem('id'),
     }
     $.ajax({
-        type: "POSt",
-        url: url + "/user",
-        data: "data",
-        dataType: "dataType",
+        type: "POST",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: url + "/user/map/save",
+        data: data,
+        dataType: "JSON",
         success: function (response) {
-
+            if (response.msg == 'Validation Error') {
+                $('.e-lat').text(response.error.lat);
+                $('.e-lng').text(response.error.lng);
+            } else if (response.msg == 'Save Success') {
+                $('#modalLoading').modal("hide");
+                $('.text-success').text(' Data Peta Berhasil di simpan !!')
+                $("#success").modal("show");
+            }
+        },
+        error: function (response) {
+            $(".error-msg").text('Error Server Access !!');
+            $("#modal-alert").modal("show");
         }
     });
-    console.log(data);
+}
+
+function mapShow() {
+    $.ajax({
+        type: "POST",
+        url: url + "/user/map/find",
+        data: {
+            id_contract: localStorage.getItem('id')
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: "JSON",
+        success: function (response) {
+            $('#lat').val(response.content.map.lat);
+            $('#lng').val(response.content.map.lng);
+        },
+        error: function () {
+            $(".error-msg").text('Error Server Access !!');
+            $("#modal-alert").modal("show");
+        }
+    });
 }
 
 function redirect() {

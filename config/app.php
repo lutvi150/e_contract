@@ -179,6 +179,8 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         // use for barcode
         Milon\Barcode\BarcodeServiceProvider::class,
+        // use for doompdf
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -235,6 +237,8 @@ return [
         // barcode
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        // PDF
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

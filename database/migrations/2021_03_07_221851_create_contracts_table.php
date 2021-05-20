@@ -30,6 +30,7 @@ class CreateContractsTable extends Migration
             $table->string("addendum",3)->nullable();
             $table->text("provider")->nullable();
             $table->string('contract_date',200)->nullable();
+            $table->string('register_number',200)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

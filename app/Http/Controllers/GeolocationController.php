@@ -55,10 +55,19 @@ class GeolocationController extends Controller
                 'executed_time'=>microtime(true)-$start,
             ];
         } else {
+            $insert=[
+                'lat'=>$request->lat,
+                'lng'=>$request->lng,
+                'id_contract'=>$request->id_contract,
+                'created_at'=>date('Y-m-h H:i:s'),
+                'updated_at'=>date('Y-m-h H:i:s'),
+            ];
+            Geolocation::where('id_contract',$request->id_contract)->delete();
+            Geolocation::insert($insert);
             $respon=[
-                'status'=>'error',
-                'msg'=>'Validation Error',
-                'error'=>$validator->errors(),
+                'status'=>'success',
+                'msg'=>'Save Success',
+                'error'=>null,
                 'content'=>null,
                 'executed_time'=>microtime(true)-$start,
             ];
@@ -86,6 +95,21 @@ class GeolocationController extends Controller
     public function edit(Geolocation $geolocation)
     {
         //
+    }
+    public function find(Request $request)
+    {
+        $start=microtime(true);
+        $map=Geolocation::select('lat','lng')->where('id_contract',$request->id_contract)->first();
+        $respon=[
+            'status'=>'success',
+            'msg'=>'Map Found',
+            'error'=>null,
+            'content'=>[
+                'map'=>$map
+            ],
+            'time_exeuted'=>microtime(true)-$start,
+        ];
+        return response()->json($respon,200);
     }
 
     /**

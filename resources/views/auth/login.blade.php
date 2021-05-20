@@ -32,25 +32,26 @@
                         </div>
                         <h2 class="mt-3 text-center">Sign In</h2>
                         <p class="text-center">Use email and password to access </p>
-                       <div class="msg-alert" hidden>
-                        <div class="alert alert-danger"  role="alert">
-                            <strong class="alert-title">Login Gagal</strong>
-                            <p class="alert-text">Username atau password yang anda gunakan salah !</p>
+                        <div class="msg-alert" hidden>
+                            <div class="alert alert-danger" role="alert">
+                                <strong class="alert-title">Login Gagal</strong>
+                                <p class="alert-text">Username atau password yang anda gunakan salah !</p>
+                            </div>
                         </div>
-                       </div>
-                       @if ($message=Session::get('error'))
-                       <div class="alert alert-danger"  role="alert">
-                        <strong>Error</strong>
-                        <p>{{ $message }}</p>
-                    </div>
-                       @endif
+                        @if ($message=Session::get('error'))
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error</strong>
+                            <p>{{ $message }}</p>
+                        </div>
+                        @endif
+                        <form action="" method="post" id="wage">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label class="text-dark" for="uname">Username </label>
                                         <input id="email" type="text" class="form-control " name="email" value=""
                                             required autocomplete="email" autofocus placeholder="Email">
-                                            <span class="red email"></span>
+                                        <span class="red email"></span>
 
                                     </div>
                                 </div>
@@ -59,7 +60,7 @@
                                         <label class="text-dark" for="pwd">Password</label>
                                         <input id="password" type="password" class="form-control " name="password"
                                             required autocomplete="current-password" placeholder="Password">
-                                            <span class="red password"></span>
+                                        <span class="red password"></span>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 text-center">
@@ -94,43 +95,52 @@
         $(document).ready(function () {
             show_loading('hide');
         });
+        var wage = document.getElementById("wage");
+        wage.addEventListener("keydown", function (e) {
+            if (e.code === "Enter") { //checks whether the pressed key is "Enter"
+               login();
+            }
+        });
+
         const url = "{{ url('') }}";
         $(".preloader ").fadeOut();
 
         function login() {
             $(".email").text("");
-                        $(".password").text("");
-           show_loading('show');
-           $(".msg-alert").attr("hidden","true");
+            $(".password").text("");
+            show_loading('show');
+            $(".msg-alert").attr("hidden", "true");
             let data = {
                 email: $("#email").val(),
                 password: $("#password").val(),
-                _token:"{{ csrf_token() }}"
+                _token: "{{ csrf_token() }}"
             }
             setTimeout(function () {
-               show_loading('hide');
-               proses_login(data)
+                show_loading('hide');
+                proses_login(data)
             }, 5000);
         }
+
         function proses_login(data) {
-             $.ajax({
+            $.ajax({
                 type: "POST",
-                url: url+"/login/verification",
+                url: url + "/login/verification",
                 data: data,
                 dataType: "JSON",
                 success: function (response) {
-                    if (response.status=='validationerror') {
+                    if (response.status == 'validationerror') {
                         $(".email").text(response.erors.email);
                         $(".password").text(response.erors.password);
-                    } else if (response.status=='failed') {
+                    } else if (response.status == 'failed') {
                         $('.alert-title').text('Login gagal');
                         $('.alert-text').text("username dan password yang anda gunakan salah !");
                         $(".msg-alert").removeAttr("hidden");
 
-                    }else if (response.status=='success') {
-                        window.location.href="{{ url('login') }}";
+                    } else if (response.status == 'success') {
+                        window.location.href = "{{ url('login') }}";
                     }
-                },error:function(){
+                },
+                error: function () {
                     $('.alert-title').text('service error');
                     $('.alert-text').text('sorry service error');
                     $('.msg-alert').removeAttr('hidden');
@@ -142,7 +152,7 @@
             if (params == 'show') {
                 $(".show-button").hide();
                 $(".show-loading").show();
-            } else{
+            } else {
                 $(".show-button").show();
                 $(".show-loading").hide();
             }

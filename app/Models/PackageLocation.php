@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Geolocation extends Model
+class PackageLocation extends Model
 {
     use HasFactory;
-    protected $fillable=['lat','lng','id_contract'];
+    protected $fillable=['id_contract','district','villages'];
 }

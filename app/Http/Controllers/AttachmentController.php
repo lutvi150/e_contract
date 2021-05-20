@@ -118,7 +118,7 @@ class AttachmentController extends Controller
     {
         switch ($id) {
             case 4:
-                $filter = [1, 2, 3, 4];
+                $filter = [1, 2, 3];
                 break;
             case 1:
                 $filter = [5, 6];

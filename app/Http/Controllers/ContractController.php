@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contract;
 use App\Models\FileAttachment;
 use App\Models\Geolocation;
+use App\Models\PackageLocation;
 use App\Models\skpd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +18,7 @@ class ContractController extends Controller
     public function contractCheck(Request $request)
     {
         $contract = Contract::select('contract_number')->where("contract_number", $request->contract_number)->first();
-        if ($contract== null) {
+        if ($contract == null) {
             $store = [
                 'contract_number' => $request->contract_number,
                 'id_user' => $request->id_user,
@@ -45,10 +46,10 @@ class ContractController extends Controller
     }
     public function getContract(Request $request)
     {
-        if ($request->session()->get('data.role')==1) {
-        $contract = Contract::where('id_user', session()->get('data.id'))->select('contract_number', 'job_name', 'status','procuretment_type', 'id')->orderBy('id', 'desc')->get();
-        } elseif ($request->session()->get('data.role')==2) {
-            $contract=Contract::where('status','!=','draf')->select('contract_number', 'job_name', 'status', 'contracts.id','procuretment_type','skpds.skpd_name')->join('skpds','contracts.id_skpd','=','skpds.id')->orderBy('id', 'desc')->get();
+        if ($request->session()->get('data.role') == 1) {
+            $contract = Contract::where('id_user', session()->get('data.id'))->select('contract_number', 'job_name', 'status', 'procuretment_type', 'id')->orderBy('id', 'desc')->get();
+        } elseif ($request->session()->get('data.role') == 2) {
+            $contract = Contract::where('status', '!=', 'draf')->select('contract_number', 'job_name', 'status', 'contracts.id', 'procuretment_type', 'skpds.skpd_name')->join('skpds', 'contracts.id_skpd', '=', 'skpds.id')->orderBy('id', 'desc')->get();
         }
         return DataTables::of($contract)->make(true);
         // dd($contract);
@@ -141,7 +142,7 @@ class ContractController extends Controller
             'contract_value' => 'required',
             'source_founds' => 'required|alpha_dash',
             'provider' => 'required',
-            'contract_date'=>'required'
+            'contract_date' => 'required',
         ];
         $message = [
             'job_name.required' => 'Nama Pekerjaan Wajib di Isi',
@@ -150,7 +151,7 @@ class ContractController extends Controller
             'contract_value.required' => 'Nilai Kontrak Wajib di Isi',
             'source_founds.required' => 'Sumber Dana Wajib di Isi',
             'provider.required' => 'Nama Penyedia Harus di isi',
-            'contract_date'=>'Tanggal Kontrak Wajib di Isi'
+            'contract_date' => 'Tanggal Kontrak Wajib di Isi',
         ];
         $validator = Validator::make($request->all(), $rules, $message);
         if ($validator->fails()) {
@@ -163,29 +164,57 @@ class ContractController extends Controller
             return response()->json($respon, 200);
         } else {
             $id = ($request->id);
-            $replace=['Rp',','];
+            $replace = ['Rp', ','];
             $insert = [
                 'job_name' => $request->job_name,
                 'ppk_name' => $request->ppk_name,
-                'ceiling' => str_replace($replace,'',$request->ceiling),
-                'contract_value' => str_replace($replace,'',$request->contract_value),
+                'ceiling' => str_replace($replace, '', $request->ceiling),
+                'contract_value' => str_replace($replace, '', $request->contract_value),
                 'source_founds' => $request->source_founds,
                 'procuretment_type' => $request->procuretment,
                 'method_selection' => $request->method_selection,
-                'provider'=>$request->provider,
-                'contract_date'=>$request->contract_date,
+                'provider' => $request->provider,
+                'contract_date' => $request->contract_date,
             ];
-            // if ($request->procuretment==4) {
-            //     $checkGeo=Geolocation::where()
-            // }
-            Contract::where('id', $id)->update($insert);
-            $respon = [
-                'status' => 'success',
-                'msg' => 'Data Update',
-                'erors' => null,
-                'content' => null,
-                'data' => $insert,
-            ];
+            $countLocation = count($request->district);
+            for ($i = 0; $i < $countLocation; $i++) {
+                $inserLocation[] = [
+                    'id_contract' => $id,
+                    'district' => $request->district[$i],
+                    'villages' => $request->villages[$i],
+                ];
+            }
+            if ($request->procuretment == 4) {
+                $checkGeo = Geolocation::where('id_contract', $id)->first();
+                if ($checkGeo == null) {
+                    $respon = [
+                        'status' => 'map not found',
+                        'msg' => 'Maaf Data Tidak bisa di simpan dikarenakan anda belum menyimpan lokasi pekerjaan di peta',
+                        'content' => null,
+                    ];
+                } else {
+                    PackageLocation::where('id_contract', $id)->delete();
+                    PackageLocation::insert($inserLocation);
+                    Contract::where('id', $id)->update($insert);
+                    $respon = [
+                        'status' => 'success',
+                        'msg' => 'Data Update',
+                        'erors' => null,
+                        'content' => null,
+                    ];
+                }
+            } else {
+                PackageLocation::where('id_contract', $id)->delete();
+                PackageLocation::insert($inserLocation);
+                Contract::where('id', $id)->update($insert);
+                $respon = [
+                    'status' => 'success',
+                    'msg' => 'Data Update',
+                    'erors' => null,
+                    'content' => null,
+                ];
+            }
+
             return response()->json($respon, 200);
         }
     }
@@ -284,19 +313,19 @@ class ContractController extends Controller
     }
     public function getDistrict(Type $var = null)
     {
-        $respon=Http::get('https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=1305');
-       return $respon->body();
+        $respon = Http::get('https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=1305');
+        return $respon->body();
     }
     public function getVillages(Request $request)
     {
-        $respon=Http::get('https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan='.$request->district_id);
-       return $respon->body();
+        $respon = Http::get('https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=' . $request->district_id);
+        return $respon->body();
     }
     // use this for tes uuid
     public function getUiid(Request $request)
     {
-        for ($i=0; $i <2000 ; $i++) {
-            $model=Contract::create()->id;
+        for ($i = 0; $i < 2000; $i++) {
+            $model = Contract::create()->id;
         }
         // return response()->json($model);
     }

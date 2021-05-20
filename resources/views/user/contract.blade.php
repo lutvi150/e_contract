@@ -301,6 +301,8 @@
                         class="btn btn-warning btn-sm"><i class="fa fa-print"></i> Cetak</a>
                     <a href="#" class="btn btn-warning btn-sm"><i
                             class="fa fa-hand-o-up"></i>Adendum</a>`;
+        } else if (data.status=='process') {
+            html=` <a href="#" class="btn btn-info btn-sm"><i class="fa fa-search"></i> Priview</a>`;
         }
         return html;
      }

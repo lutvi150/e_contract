@@ -4,6 +4,8 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FileAttachmentController;
+use App\Http\Controllers\GeolocationController;
+use App\Http\Controllers\PackageLocationController;
 use App\Http\Controllers\PrintContract;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\Verificator;
@@ -63,12 +65,14 @@ Route::middleware(['userCheck:1'])->group(function () {
     Route::post('user/contract/delete', [ContractController::class, 'shoftDelete']);
     // Route::get('user/contract/edit/{id}',[ContractController::class,'editContract']);
     Route::post('user/contract/find', [ContractController::class, 'findContract']);
-    Route::post('user/contract/update', [ContractController::class, 'updateContract']);
+    Route::post('user/contract/update', [ContractController::class, 'updateContract'])->name('user-contract-update');
     Route::post('user/contract/sendContract', [ContractController::class, 'sendContract']);
     Route::post('user/contract/count', [ContractController::class, 'countContractUser']);
     Route::post('user/contract/upload/attachment', [FileAttachmentController::class, 'store']);
     Route::post('user/attachment/priview',[AttachmentController::class,'attachmentPriview']);
-    Route::post('user/map/save',);
+    Route::post('user/location/edit',[PackageLocationController::class,'find']);
+    Route::post('user/map/save',[GeolocationController::class,'store']);
+    Route::post('user/map/find',[GeolocationController::class,'find']);
 });
 // use for admin
 Route::middleware(['userCheck:3'])->group(function () {
@@ -81,6 +85,7 @@ Route::middleware(['userCheck:2'])->group(function () {
     Route::view('verificator/contract', 'verificator.contract');
     Route::get('verificator/contract/get', [ContractController::class, 'getContract']);
     Route::view('verificator/contract/review', 'verificator.createContract');
+    Route::post('verificator/location/edit',[PackageLocationController::class,'find']);
     Route::post('verificator/contract/find', [ContractController::class, 'findContract']);
     Route::post('verificator/attachment/priview',[AttachmentController::class,'attachmentPriview']);
     Route::post('verificator/sendtoserver', [Verificator::class,'sendVerificator']);
@@ -100,7 +105,7 @@ Route::get('session/make', [AuthController::class, 'saveSession']);
 Route::get('session/show', [AuthController::class, 'callSphpession']);
 Route::get('session/clear', [AuthController::class, 'clearSession']);
 Route::post('login/verification', [AuthController::class, 'formLogin']);
-
+Route::view('loading-tes', 'dev.loading-tesF');
 // make table
 Route::view('chart', 'chart');
 Route::get('barcode', [PrintContract::class, 'barcodeTes']);
@@ -108,3 +113,5 @@ Route::get('barcode', [PrintContract::class, 'barcodeTes']);
 Route::get('tes', function () {
     return response()->json(session()->all());
 });
+// function tes api
+Route::get('tes/2',[PackageLocationController::class,'tesApi']);
