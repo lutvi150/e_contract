@@ -67,6 +67,7 @@
                                     <th style="width: 160px">Menu</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                             </tbody>
                         </table>
@@ -160,7 +161,106 @@
         </div>
     </div>
 </div>
+{{-- history verification --}}
+<div class="modal fade" id="modelHistory" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">History Verifikasi</h5>
 
+            </div>
+            <div class="modal-body">
+                {{-- tag --}}
+                <div class="col-md-6 col-sm-6  ">
+                    <div class="x_panel">
+                      <div class="x_title">
+                        <h2>Daily active users <small>Sessions</small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                          </li>
+                          <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Settings 1</a>
+                                <a class="dropdown-item" href="#">Settings 2</a>
+                              </div>
+                          </li>
+                          <li><a class="close-link"><i class="fa fa-close"></i></a>
+                          </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="x_content">
+                        <ul class="list-unstyled timeline">
+                          <li>
+                            <div class="block">
+                              <div class="tags">
+                                <a href="" class="tag">
+                                  <span>Entertainment</span>
+                                </a>
+                              </div>
+                              <div class="block_content">
+                                <h2 class="title">
+                                                <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                            </h2>
+                                <div class="byline">
+                                  <span>13 hours ago</span> by <a>Jane Smith</a>
+                                </div>
+                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="block">
+                              <div class="tags">
+                                <a href="" class="tag">
+                                  <span>Entertainment</span>
+                                </a>
+                              </div>
+                              <div class="block_content">
+                                <h2 class="title">
+                                                <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                            </h2>
+                                <div class="byline">
+                                  <span>13 hours ago</span> by <a>Jane Smith</a>
+                                </div>
+                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="block">
+                              <div class="tags">
+                                <a href="" class="tag">
+                                  <span>Entertainment</span>
+                                </a>
+                              </div>
+                              <div class="block_content">
+                                <h2 class="title">
+                                                <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                            </h2>
+                                <div class="byline">
+                                  <span>13 hours ago</span> by <a>Jane Smith</a>
+                                </div>
+                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /page content -->
 <script>
     // $('#data-contract').DataTable();
@@ -239,7 +339,7 @@
                             css = 'danger';
                             status = 'Di Tolak';
                         }
-                        return `<label for="" class="label label-` + css + `">` + status + `</label>`;
+                        return `<a for="" class="label label-` + css + `"  data-toggle="tooltip" data-placement="top" title="Klik Keterangan">` + status + `</a>`;
                     }
                 }, {
                     mData: getidAndSatus,
@@ -262,6 +362,9 @@
 
                     <a href="#" class="btn btn-warning btn-sm"><i
                             class="fa fa-hand-o-up"></i>Adendum</a>`;
+        } else if (data.status=='refuse') {
+            html=`<a href="#" data-id="" onclick="edit('`+data.id+`')"
+                        class="btn btn-warning btn-sm"><i class="fa fa-search"></i> Detail</a>`;
         }
         return html;
      }

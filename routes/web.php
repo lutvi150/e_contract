@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\Example;
 use App\Http\Controllers\FileAttachmentController;
 use App\Http\Controllers\GeolocationController;
 use App\Http\Controllers\PackageLocationController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\Verificator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +88,7 @@ Route::middleware(['userCheck:2'])->group(function () {
     Route::get('verificator/contract/get', [ContractController::class, 'getContract']);
     Route::view('verificator/contract/review', 'verificator.createContract');
     Route::post('verificator/location/edit',[PackageLocationController::class,'find']);
+    Route::post('verificator/map/find',[GeolocationController::class,'find']);
     Route::post('verificator/contract/find', [ContractController::class, 'findContract']);
     Route::post('verificator/attachment/priview',[AttachmentController::class,'attachmentPriview']);
     Route::post('verificator/sendtoserver', [Verificator::class,'sendVerificator']);
@@ -102,7 +105,7 @@ Route::get('district',[ContractController::class,'getDistrict']);
 Route::post('villages',[ContractController::class,'getVillages']);
 // use for tes
 Route::get('session/make', [AuthController::class, 'saveSession']);
-Route::get('session/show', [AuthController::class, 'callSphpession']);
+Route::get('session/show', [AuthController::class, 'callSession']);
 Route::get('session/clear', [AuthController::class, 'clearSession']);
 Route::post('login/verification', [AuthController::class, 'formLogin']);
 Route::view('loading-tes', 'dev.loading-tesF');
@@ -111,7 +114,12 @@ Route::view('chart', 'chart');
 Route::get('barcode', [PrintContract::class, 'barcodeTes']);
 // tes function
 Route::get('tes', function () {
-    return response()->json(session()->all());
+    for ($i=0; $i <1000 ; $i++) {
+        $result[]=['id'=>Str::uuid()->toString()];
+    }
+    return $result;
 });
 // function tes api
 Route::get('tes/2',[PackageLocationController::class,'tesApi']);
+// tes serealize
+Route::get('ser',[Example::class,'serTes']);

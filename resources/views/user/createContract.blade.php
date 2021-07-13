@@ -14,7 +14,8 @@
     <div class="">
         <div class="page-title">
             <div class="title_left">
-                <h3>Register Kontrak</h3>
+                <h3>Register Kontrak
+                    </h3>
             </div>
 
 
@@ -57,7 +58,7 @@
                                                 <label for="">Tanggal Kontrak</label>
                                                 <input type="text" name="contract_date" id="contract_date" class="form-control"
                                                     placeholder="" aria-describedby="helpId">
-                                                <small id="helpId" class="text-muted red"></small>
+                                                <small id="helpId" class="text-muted red contract_date"></small>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -391,5 +392,4 @@
 <script src={{ asset('js/currency.js') }}></script>
 <script src={{ asset('js/user/createContract.js') }}></script>
 <!-- /page content -->
-
 @include('layouts.footer')

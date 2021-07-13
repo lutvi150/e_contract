@@ -47,12 +47,13 @@ class ContractController extends Controller
     public function getContract(Request $request)
     {
         if ($request->session()->get('data.role') == 1) {
-            $contract = Contract::where('id_user', session()->get('data.id'))->select('contract_number', 'job_name', 'status', 'procuretment_type', 'id')->orderBy('id', 'desc')->get();
+            $contract = Contract::orderBy('contracts.created_at', 'desc')->where('id_user', session()->get('data.id'))->select('contract_number', 'job_name', 'status', 'procuretment_type', 'id')->get();
         } elseif ($request->session()->get('data.role') == 2) {
-            $contract = Contract::where('status', '!=', 'draf')->select('contract_number', 'job_name', 'status', 'contracts.id', 'procuretment_type', 'skpds.skpd_name')->join('skpds', 'contracts.id_skpd', '=', 'skpds.id')->orderBy('id', 'desc')->get();
+            $contract = Contract::orderBy('contracts.created_at', 'desc')->where('status', '!=', 'draf')->select('contract_number', 'job_name', 'status', 'contracts.id', 'procuretment_type', 'skpds.skpd_name')->join('skpds', 'contracts.id_skpd', '=', 'skpds.id')->get();
         }
         return DataTables::of($contract)->make(true);
         // dd($contract);
+        // echo json_encode($contract);
     }
     public function editContract(Request $request)
     {

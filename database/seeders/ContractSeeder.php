@@ -28,6 +28,7 @@ class ContractSeeder extends Seeder
             'status'=>'draf',
             'id_user'=>3,
             'provider'=>'CV Ani',
+            'created_at'=>date('Y-m-d H:i:s')
         ];
         Contract::create($insert);
     }

@@ -179,21 +179,9 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="map" aria-labelledby="profile-tab">
                                     <form action="" class="form-horizontal" method="post">
-                                        <div class="row">
-                                            <div class="col-md-8 text-center">
+                                        <div class="row text-center">
+                                            <div class="col-md-12 text-center">
                                                 <div style="height: 300px" class="mapid" id="mapid">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Lat</label>
-                                                    <input type="text" name="" readonly id="lat" class="form-control"
-                                                        placeholder="" readonly aria-describedby="helpId">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="">Long</label>
-                                                    <input type="text" name="" readonly id="lng" class="form-control"
-                                                        placeholder="" aria-describedby="helpId">
                                                 </div>
                                             </div>
 
@@ -204,7 +192,8 @@
                         </div>
                         <div class="col-md-12">
                             <button id="verification" type="button" onclick="verification()"></button>
-                            <a href="{{ url("user/contract") }}" class="btn btn-info btn-sm"><i class="fa fa-reply"></i>
+                            <a href="{{ url("verificator/contract") }}" class="btn btn-info btn-sm"><i
+                                    class="fa fa-reply"></i>
                                 Kembali</a>
                         </div>
                     </div>
@@ -352,7 +341,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="">Alasan Penolakan</label>
-                    <textarea name="" class="form-control" id="reason" cols="30" rows="10"></textarea>
+                    <textarea name="" class="form-control reason" id="reason" cols="30" rows="30"></textarea>
                     <small id="helpId" class="text-muted red ereason"></small>
                 </div>
             </div>
@@ -385,10 +374,32 @@
 <!-- /page content -->
 
 <script src={{ asset('js/currency.js') }}></script>
+{{-- ck editor --}}
+<script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+{{-- costume for ck editor --}}
+<script>
+    let theEditor;
+
+    ClassicEditor
+        .create(document.querySelector('#reason'))
+        .then(editor => {
+            theEditor = editor;
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+    function getDataFromTheEditor() {
+        return theEditor.getData();
+    }
+</script>
 <script>
     $(document).ready(function () {
         getData();
         map();
+        coordinateLocation();
     });
 
     function map() {
@@ -455,6 +466,23 @@
         });
     }
 
+    function coordinateLocation() {
+        $.ajax({
+            type: "POST",
+            url: "{{ url('verificator/map/find') }}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                id_contract: localStorage.getItem('id')
+            },
+            dataType: "JSON",
+            success: function (response) {
+
+            }
+        });
+    }
+
     function showFormAttachement() {
         $('.text-loading').text('Loading File Mohon Tunggu !!!!');
         $('#modalLoading').modal('show');
@@ -506,53 +534,53 @@
     }
     // get location select
     function getPackageLocation() {
-    $.ajax({
-        type: "POST",
-        url: url + "/verificator/location/edit",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            id: localStorage.getItem('id')
-        },
-        dataType: "JSON",
-        success: function (response) {
-            localStorage.setItem('count_row', response.content.length);
+        $.ajax({
+            type: "POST",
+            url: url + "/verificator/location/edit",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                id: localStorage.getItem('id')
+            },
+            dataType: "JSON",
+            success: function (response) {
+                localStorage.setItem('count_row', response.content.length);
 
-            if (response.content.length > 0) {
-                let count_row = localStorage.getItem('count_row');
-                let sum_row = '';
-                if (count_row == null) {
-                    sum_row = 2
-                    localStorage.setItem('count_row', sum_row);
-                } else {
-                    sum_row = parseInt(count_row) + 1;
-                    localStorage.setItem('count_row', sum_row);
-                }
-                let datadistric = JSON.parse(localStorage.getItem('distric'));
+                if (response.content.length > 0) {
+                    let count_row = localStorage.getItem('count_row');
+                    let sum_row = '';
+                    if (count_row == null) {
+                        sum_row = 2
+                        localStorage.setItem('count_row', sum_row);
+                    } else {
+                        sum_row = parseInt(count_row) + 1;
+                        localStorage.setItem('count_row', sum_row);
+                    }
+                    let datadistric = JSON.parse(localStorage.getItem('distric'));
 
-                let html = '';
-                let number = 1;
-                let newNumber = 1;
-                let button = '';
-                response.content.forEach(element => {
+                    let html = '';
+                    let number = 1;
+                    let newNumber = 1;
+                    let button = '';
+                    response.content.forEach(element => {
 
-                    newNumber = number++;
+                        newNumber = number++;
 
-                    html += `<tr id="row">
+                        html += `<tr id="row">
                     <td>` + newNumber + `</td>
-                    <td>`+element.district_name+`
+                    <td>` + element.district_name + `
                     </td>
                     <td>
-                        `+element.villages_name+`
+                        ` + element.villages_name + `
                     </td>
                 </tr>`;
-                });
-                $('#district_value').html(html);
+                    });
+                    $('#district_value').html(html);
+                }
             }
-        }
-    });
-}
+        });
+    }
 
     // function for show method selection
     function methodSelection(response) {
@@ -612,12 +640,13 @@
         $("#id").val(id);
         make_currency();
     }
+
     function make_currency() {
-    let contract_value = $('#contract_value');
-    let ceiling = $('#ceiling');
-    formatCurrency(contract_value);
-    formatCurrency(ceiling);
-}
+        let contract_value = $('#contract_value');
+        let ceiling = $('#ceiling');
+        formatCurrency(contract_value);
+        formatCurrency(ceiling);
+    }
 
     function verification() {
         $('#modelVerification').modal('show');
@@ -634,15 +663,15 @@
     }
 
     function send_verification() {
-
+        $('.text-muted').text('');
         let verification = localStorage.getItem('verification');
-        let reason = $('#reason').val();
+        let reason = getDataFromTheEditor();
         let data = {
             verification: verification,
             reason: reason,
             id: localStorage.getItem('id'),
+            id_user:"{{ session()->get('data.id') }}"
         }
-        console.log(verification);
         if (verification == 'false') {
             if (reason == "") {
                 $('.ereason').text('Maaf Alasan penolakan tidak boleh kosong')
@@ -658,6 +687,7 @@
 
     function send_server_verification(data) {
         $('#modelAccept').modal('hide');
+        $('#modelRefuse').modal('hide')
         $('#modalLoading').modal('show');
         $.ajax({
             type: "POST",

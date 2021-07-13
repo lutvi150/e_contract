@@ -165,9 +165,9 @@ function getPackageLocation() {
         },
         dataType: "JSON",
         success: function (response) {
-            localStorage.setItem('count_row', response.content.length);
 
             if (response.content.length > 0) {
+                localStorage.setItem('count_row', response.content.length);
                 let count_row = localStorage.getItem('count_row');
                 let sum_row = '';
                 if (count_row == null) {
@@ -391,6 +391,7 @@ function saveData() {
             if (response.status == 'error') {
                 $('#modalLoading').modal('hide');
                 let erors = response.erors;
+                $('.contract_date').txxt(erros.contract_date);
                 $(".job_name").text(erors.job_name);
                 $(".ceiling").text(erors.ceiling);
                 $(".contract_value").text(erors.contract_value);

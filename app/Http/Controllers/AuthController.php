@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock\Tags\Uses;
 
 class AuthController extends Controller
@@ -117,7 +118,7 @@ class AuthController extends Controller
                 'msg'=>'success',
                 'erors'=>null,
                 'data'=>Session::get('data'),
-                'content'=>null
+                'content'=>null,
             ];
             return response()->json($respon,200);
            } else {
@@ -134,14 +135,15 @@ class AuthController extends Controller
     public function saveSession(Request $request)
     {
         $email='lutvi1500@gmail.com';
-        $user=User::select('name','email','id','role','status_account')->where('email',$email)->first();
-        Session::put(['data'=>$user]);
+        $user=User::where('email',$email)->first();
+        Session::put(['data'=>$user,'id'=>Str::uuid()->toString()]);
         echo json_encode($user);
 
     }
     public function callSession(Request $request)
     {
-        $data =  Session::get('data');
+        $data =  Session::all();
+        // $data=['tes'=>Str::uuid()->toString()];
         echo json_encode($data);
     }
     public function clearSession(Request $request)

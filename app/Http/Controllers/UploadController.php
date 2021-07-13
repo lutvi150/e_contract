@@ -69,6 +69,7 @@ class UploadController extends Controller
                 'id_contract' => $id_contract,
                 'id_attachment' => $id_attachment,
                 'file_attachment' => $fileName,
+                'extention'=>$extention,
             ];
             $checkFile=FileAttachment::select('file_attachment')->where('id_contract',$id_contract)->where('id_attachment',$id_attachment)->first();
             if ($checkFile==null) {

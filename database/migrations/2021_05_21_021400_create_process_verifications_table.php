@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFileAttachmentsTable extends Migration
+class CreateProcessVerificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateFileAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('file_attachments', function (Blueprint $table) {
+        Schema::create('process_verifications', function (Blueprint $table) {
             $table->id();
-            $table->char('id_contract',36)->index();
-            $table->string('id_attachment',10);
-            $table->string('extention',200);
-            $table->text('file_attachment');
+            $table->string('id_contract',200);
+            $table->string('id_user',20)->nullable();
+            $table->text('reason')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateFileAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('file_attachments');
+        Schema::dropIfExists('process_verifications');
     }
 }

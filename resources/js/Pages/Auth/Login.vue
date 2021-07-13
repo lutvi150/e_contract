@@ -50,6 +50,7 @@
     import JetLabel from '@/Jetstream/Label'
     import JetValidationErrors from '@/Jetstream/ValidationErrors'
 
+
     export default {
         components: {
             JetAuthenticationCard,

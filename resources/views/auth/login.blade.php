@@ -44,7 +44,7 @@
                             <p>{{ $message }}</p>
                         </div>
                         @endif
-                        <form action="" method="post" id="wage">
+                        <form action="#" method="post" id="wage">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -118,7 +118,7 @@
             setTimeout(function () {
                 show_loading('hide');
                 proses_login(data)
-            }, 5000);
+            }, 3000);
         }
 
         function proses_login(data) {
